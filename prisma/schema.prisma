@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String  @id @default(uuid())
+  name     String
+  email    String  @unique
+  password String  @unique
+  admin    Boolean
+}
+
+model Client {
+  id String @id @default(uuid())
+
+  name    String
+  email   String  @unique
+  phone   String? @unique
+  address String?
+
+  role    String?
+  roleAge Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  social Social[]
+
+  Office   Office? @relation(fields: [officeId], references: [id])
+  officeId String?
+}
+
+model Social {
+  id String @id @default(uuid())
+
+  instagram String?
+  facebook  String?
+  twitter   String?
+
+  Client   Client? @relation(fields: [clientId], references: [id])
+  clientId String?
+}
+
+model Office {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  location    String?
+  email       String  @unique
+  phone       String? @unique
+  website     String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  historyGift Gift[]
+  client      Client[]
+}
+
+model Gift {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  sendDate    Int?
+
+  Office   Office? @relation(fields: [officeId], references: [id])
+  officeId String?
+}

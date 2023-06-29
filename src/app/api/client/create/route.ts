@@ -1,0 +1,43 @@
+import { TClient } from '@/types'
+import { AuthRoute } from '@/hook/authRoute'
+import { prisma } from '@/lib/prisma'
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function POST(req: NextRequest) {
+  const { name, address, email, phone, role, roleAge, officeId } =
+    (await req.json()) as TClient
+
+  try {
+    const Auth = AuthRoute(req)
+
+    if (!Auth) {
+      return NextResponse.json('Token Incorreto')
+    }
+
+    const findClient = await prisma.client.findUnique({
+      where: {
+        email,
+      },
+    })
+
+    if (findClient) {
+      return NextResponse.json('Client already exists')
+    }
+
+    const client = await prisma.client.create({
+      data: {
+        name,
+        email,
+        phone,
+        address,
+        role,
+        roleAge,
+        officeId,
+      },
+    })
+
+    return NextResponse.json(client)
+  } catch (err) {
+    console.log(err)
+  }
+}

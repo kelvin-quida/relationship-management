@@ -1,0 +1,22 @@
+modal user:
+    name
+    email
+    phone
+    address
+    office
+    instagram
+    birthday
+    funcao:[
+        {
+            arquiteto
+            engenheiro
+            design
+            
+        },
+        {
+            funcaoAge
+        }
+    ]
+
+modal gift:
+    
