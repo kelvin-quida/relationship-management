@@ -6,6 +6,7 @@ export type TClient = {
   address?: string
   role?: string
   roleAge?: number
+  office?: string
   officeId?: string
 }
 
