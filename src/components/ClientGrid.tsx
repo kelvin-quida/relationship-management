@@ -1,12 +1,9 @@
 'use client'
+import { getClients } from '@/queries/getClients'
 import { TClient } from '@/types'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { parseCookies } from 'nookies'
-
-type Props = {
-  categorTitle: string
-  dataList: TClient[]
-}
 
 const filterTitles = [
   { title: 'Sel' },
@@ -17,16 +14,43 @@ const filterTitles = [
   { title: 'Ações' },
 ]
 
-export default function ClientGrid({ categorTitle, dataList }: Props) {
-  const { token } = parseCookies()
+export default function ClientGrid() {
+  const queryClient = useQueryClient()
 
-  function handleRemoveClient(id: string) {
-    axios.delete(`http://localhost:3000/api/client/delete?id=${id}`, {
+  const { data: clients } = useQuery({
+    queryKey: ['clients'],
+    queryFn: getClients,
+  })
+
+  async function handleRemoveClient(id: string) {
+    const { token } = parseCookies()
+
+    await axios.delete(`http://localhost:3000/api/client/delete?id=${id}`, {
       headers: {
         Authorization: `${token}`,
       },
     })
   }
+
+  const mutation = useMutation({
+    mutationFn: handleRemoveClient,
+    onMutate: async (clientID) => {
+      await queryClient.cancelQueries({ queryKey: ['clients'] })
+      const previousClients = queryClient.getQueryData(['clients'])
+
+      queryClient.setQueryData<TClient[]>(['clients'], (old) => {
+        return old?.filter(({ id }) => id !== clientID)
+      })
+
+      return { previousClients }
+    },
+    onError: (_err, _deleteClients, context) => {
+      queryClient.setQueryData(['clients'], context?.previousClients)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(['clients'])
+    },
+  })
 
   return (
     <>
@@ -60,7 +84,7 @@ export default function ClientGrid({ categorTitle, dataList }: Props) {
             type="submit"
             className="flex w-max justify-center rounded-md bg-orange-600 px-6 py-3 text-sm font-semibold leading-6 text-white shadow-sm duration-150 ease-out hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600 active:scale-105"
           >
-            Adicionar {categorTitle}
+            Adicionar Clientes
           </button>
         </div>
         <table className="w-full text-sm text-gray-500 dark:text-gray-400">
@@ -78,57 +102,52 @@ export default function ClientGrid({ categorTitle, dataList }: Props) {
             </tr>
           </thead>
           <tbody>
-            {dataList.map(
-              (
-                { name, email, phone, role, office, id }: TClient,
-                index: any,
-              ) => (
-                <tr
-                  key={index}
-                  className="cursor-pointer select-none rounded-lg bg-white duration-150 ease-out hover:-translate-y-1 hover:bg-zinc-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
+            {clients?.map(({ name, email, phone, role, office, id }, index) => (
+              <tr
+                key={index}
+                className="cursor-pointer select-none rounded-lg bg-white duration-150 ease-out hover:-translate-y-1 hover:bg-zinc-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
+              >
+                <td className="w-4 p-4">
+                  <div className="flex items-center">
+                    <input
+                      id="checkbox-table-search-1"
+                      type="checkbox"
+                      className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-orange-600 focus:ring-2 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-orange-600 dark:focus:ring-offset-gray-800"
+                    />
+                    <label
+                      htmlFor="checkbox-table-search-1"
+                      className="sr-only"
+                    >
+                      checkbox
+                    </label>
+                  </div>
+                </td>
+                <th
+                  scope="row"
+                  className="flex flex-col items-start justify-center whitespace-nowrap p-4 font-medium text-gray-900 dark:text-white"
                 >
-                  <td className="w-4 p-4">
-                    <div className="flex items-center">
-                      <input
-                        id="checkbox-table-search-1"
-                        type="checkbox"
-                        className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-orange-600 focus:ring-2 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-orange-600 dark:focus:ring-offset-gray-800"
-                      />
-                      <label
-                        htmlFor="checkbox-table-search-1"
-                        className="sr-only"
-                      >
-                        checkbox
-                      </label>
-                    </div>
-                  </td>
-                  <th
-                    scope="row"
-                    className="flex flex-col items-start justify-center whitespace-nowrap p-4 font-medium text-gray-900 dark:text-white"
+                  <h4 className="text-sm font-bold text-slate-800">{name}</h4>
+                  <p className="text-sm font-normal text-zinc-500">{email}</p>
+                </th>
+                <td className="p-4 text-left">{office || 'Tem não'}</td>
+                <td className="p-4">{phone}</td>
+                <td className="p-4">{role}</td>
+                <td className="flex items-center justify-start gap-2 p-4">
+                  <button
+                    type="submit"
+                    className="flex w-max justify-center rounded-md bg-sky-600 px-4 py-2 text-xs font-semibold leading-6 text-white shadow-sm duration-150 ease-out hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 active:scale-105"
                   >
-                    <h4 className="text-sm font-bold text-slate-800">{name}</h4>
-                    <p className="text-sm font-normal text-zinc-500">{email}</p>
-                  </th>
-                  <td className="p-4 text-left">{office || 'Tem não'}</td>
-                  <td className="p-4">{phone}</td>
-                  <td className="p-4">{role}</td>
-                  <td className="flex items-center justify-start gap-2 p-4">
-                    <button
-                      type="submit"
-                      className="flex w-max justify-center rounded-md bg-sky-600 px-4 py-2 text-xs font-semibold leading-6 text-white shadow-sm duration-150 ease-out hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 active:scale-105"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      onClick={() => handleRemoveClient(id)}
-                      className="flex w-max justify-center rounded-md border border-red-500 bg-red-100 px-4 py-2 text-xs font-semibold leading-6 text-red-800 shadow-sm duration-150 ease-out hover:bg-red-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 active:scale-105"
-                    >
-                      Remover
-                    </button>
-                  </td>
-                </tr>
-              ),
-            )}
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => mutation.mutate(id)}
+                    className="flex w-max justify-center rounded-md border border-red-500 bg-red-100 px-4 py-2 text-xs font-semibold leading-6 text-red-800 shadow-sm duration-150 ease-out hover:bg-red-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 active:scale-105"
+                  >
+                    Remover
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import '../styles/globals.css'
 import { Inter } from 'next/font/google'
+import QueryProvider from './Providers/QueryProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -12,8 +13,9 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
-      <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+      <QueryProvider>
+        <body className={inter.className}>{children}</body>
+      </QueryProvider>
     </html>
   )
 }
