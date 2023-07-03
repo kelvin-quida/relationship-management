@@ -1,4 +1,4 @@
-import { TClient } from '@/app/types'
+import { TClient } from '@/src/types'
 import { AuthRoute } from '@/hook/authRoute'
 import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'

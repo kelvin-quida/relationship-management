@@ -2,7 +2,8 @@
 import { ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { parseCookies } from 'nookies'
-import Topbar from '@/components/Topbar'
+import { GlobalProvider } from '@/context/MainContext'
+import Sidebar from '@/components/ui/Sidebar'
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const { token } = parseCookies()
@@ -14,8 +15,14 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <Topbar />
-      {children}
+      <GlobalProvider>
+        <div className='flex'>
+          <Sidebar />
+          <div className="flex flex-col bg-neutral-900 w-full min-h-screen">
+            {children}
+          </div>
+        </div>
+      </GlobalProvider>
     </>
   )
 }

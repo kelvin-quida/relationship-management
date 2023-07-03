@@ -4,6 +4,11 @@ import { TClient } from '@/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { parseCookies } from 'nookies'
+import { useDataContext } from '@/context/MainContext'
+import { AddClient } from './AddClients'
+import { UpdateClient } from './UpdateClient'
+import SliderModal from '../ui/SliderModal'
+import SelectItem from '../ui/SelectItem'
 
 const filterTitles = [
   { title: 'Sel' },
@@ -15,6 +20,8 @@ const filterTitles = [
 ]
 
 export default function ClientGrid() {
+  const { openDialog, setClientDataContext } = useDataContext()
+
   const queryClient = useQueryClient()
 
   const { data: clients } = useQuery({
@@ -52,8 +59,15 @@ export default function ClientGrid() {
     },
   })
 
+  function handleOpenModal(data: TClient) {
+    openDialog()
+    setClientDataContext(data)
+  }
+
   return (
     <>
+      <SliderModal />
+
       <div className="relative w-full overflow-x-auto border  border-slate-200 bg-white p-6 sm:rounded-lg">
         <div className="flex items-center justify-between pb-4">
           {/* Dropdown */}
@@ -80,12 +94,8 @@ export default function ClientGrid() {
               placeholder="Buscar cliente"
             />
           </div>
-          <button
-            type="submit"
-            className="flex w-max justify-center rounded-md bg-orange-600 px-6 py-3 text-sm font-semibold leading-6 text-white shadow-sm duration-150 ease-out hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600 active:scale-105"
-          >
-            Adicionar Clientes
-          </button>
+          <AddClient />
+          <SelectItem />
         </div>
         <table className="w-full text-sm text-gray-500 dark:text-gray-400">
           <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -102,10 +112,10 @@ export default function ClientGrid() {
             </tr>
           </thead>
           <tbody>
-            {clients?.map(({ name, email, phone, role, office, id }, index) => (
+            {clients?.map((data, index) => (
               <tr
                 key={index}
-                className="cursor-pointer select-none rounded-lg bg-white duration-150 ease-out hover:-translate-y-1 hover:bg-zinc-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
+                className="cursor-pointer select-none rounded-lg bg-white duration-150 ease-out dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
               >
                 <td className="w-4 p-4">
                   <div className="flex items-center">
@@ -124,23 +134,23 @@ export default function ClientGrid() {
                 </td>
                 <th
                   scope="row"
-                  className="flex flex-col items-start justify-center whitespace-nowrap p-4 font-medium text-gray-900 dark:text-white"
+                  onClick={() => handleOpenModal(data)}
+                  className="flex flex-col items-start justify-center whitespace-nowrap rounded-lg border border-transparent p-4 font-medium text-gray-900 duration-150 ease-out hover:border-zinc-300 hover:bg-zinc-50 dark:text-white"
                 >
-                  <h4 className="text-sm font-bold text-slate-800">{name}</h4>
-                  <p className="text-sm font-normal text-zinc-500">{email}</p>
+                  <h4 className="text-sm font-bold text-slate-800">
+                    {data.name}
+                  </h4>
+                  <p className="text-sm font-normal text-zinc-500">
+                    {data.email}
+                  </p>
                 </th>
-                <td className="p-4 text-left">{office || 'Tem não'}</td>
-                <td className="p-4">{phone}</td>
-                <td className="p-4">{role}</td>
+                <td className="p-4 text-left">{data.office || 'Tem não'}</td>
+                <td className="p-4">{data.phone}</td>
+                <td className="p-4">{data.role}</td>
                 <td className="flex items-center justify-start gap-2 p-4">
+                  <UpdateClient data={data} />
                   <button
-                    type="submit"
-                    className="flex w-max justify-center rounded-md bg-sky-600 px-4 py-2 text-xs font-semibold leading-6 text-white shadow-sm duration-150 ease-out hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 active:scale-105"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => mutation.mutate(id)}
+                    onClick={() => mutation.mutate(data.id)}
                     className="flex w-max justify-center rounded-md border border-red-500 bg-red-100 px-4 py-2 text-xs font-semibold leading-6 text-red-800 shadow-sm duration-150 ease-out hover:bg-red-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 active:scale-105"
                   >
                     Remover

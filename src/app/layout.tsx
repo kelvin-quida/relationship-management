@@ -13,6 +13,9 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <QueryProvider>
         <body className={inter.className}>{children}</body>
       </QueryProvider>

@@ -8,7 +8,7 @@ export async function PATCH(req: NextRequest) {
     (await req.json()) as TOffice
 
   const id = req.nextUrl.searchParams.get('id')
- 
+
   const Auth = AuthRoute(req)
 
   if (!Auth) {
