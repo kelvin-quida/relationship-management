@@ -1,13 +1,15 @@
 import React from 'react'
 import * as Select from '@radix-ui/react-select'
 import { ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons'
+import { TOffice } from '@/types'
 
 type Props = {
   onValueChange: (value: string) => void
   value: string
+  options: TOffice[] | undefined
 }
 
-export const SelectContainer = ({ onValueChange, value }: Props) => (
+export const SelectContainer = ({ onValueChange, value, options }: Props) => (
   <Select.Root onValueChange={onValueChange} value={value}>
     <Select.Trigger
       className="inline-flex h-[35px] items-center justify-center gap-[5px] rounded bg-white px-[15px] text-[13px] leading-none text-emerald-500 shadow-[0_2px_10px] shadow-black/10 outline-none hover:bg-neutral-700 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-emerald-500"
@@ -28,12 +30,16 @@ export const SelectContainer = ({ onValueChange, value }: Props) => (
             <Select.Label className="px-[25px] text-xs leading-[25px] text-white">
               Fruits
             </Select.Label>
-            <Select.Item
-              value="adasdasdasd"
-              className="cursor-pointer p-3 duration-100 ease-out focus:bg-neutral-800 focus:text-white focus:outline-emerald-500"
-            >
-              <Select.ItemText>Telecomunicações</Select.ItemText>
-            </Select.Item>
+
+            {options?.map((data, index) => (
+              <Select.Item
+                key={index}
+                value={data.id}
+                className="cursor-pointer p-3 duration-100 ease-out focus:bg-neutral-800 focus:text-white focus:outline-emerald-500"
+              >
+                <Select.ItemText>{data.name}</Select.ItemText>
+              </Select.Item>
+            ))}
           </Select.Group>
         </Select.Viewport>
         <Select.ScrollDownButton className="flex h-[25px] cursor-default items-center justify-center bg-white text-emerald-500">

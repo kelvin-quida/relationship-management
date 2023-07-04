@@ -110,7 +110,7 @@ export default function ClientGrid() {
             </tr>
           </thead>
           <tbody>
-            {clients?.map((data, index) => (
+            {clients?.map((item, index) => (
               <tr
                 key={index}
                 className="cursor-pointer select-none rounded-lg bg-white duration-150 ease-out dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
@@ -132,23 +132,23 @@ export default function ClientGrid() {
                 </td>
                 <th
                   scope="row"
-                  onClick={() => handleOpenModal(data)}
+                  onClick={() => handleOpenModal(item)}
                   className="flex flex-col items-start justify-center whitespace-nowrap rounded-lg border border-transparent p-4 font-medium text-gray-900 duration-150 ease-out hover:border-zinc-300 hover:bg-zinc-50 dark:text-white"
                 >
                   <h4 className="text-sm font-bold text-slate-800">
-                    {data.name}
+                    {item.name}
                   </h4>
                   <p className="text-sm font-normal text-zinc-500">
-                    {data.email}
+                    {item.email}
                   </p>
                 </th>
-                <td className="p-4 text-left">{data.office || 'Tem não'}</td>
-                <td className="p-4">{data.phone}</td>
-                <td className="p-4">{data.role}</td>
+                <td className="p-4 text-left">{item.office || 'Tem não'}</td>
+                <td className="p-4">{item.phone}</td>
+                <td className="p-4">{item.role}</td>
                 <td className="flex items-center justify-start gap-2 p-4">
-                  <FormUpdateClient data={data} />
+                  <FormUpdateClient data={item} />
                   <button
-                    onClick={() => mutation.mutate(data.id)}
+                    onClick={() => mutation.mutate(item.id)}
                     className="flex w-max justify-center rounded-md border border-red-500 bg-red-100 px-4 py-2 text-xs font-semibold leading-6 text-red-800 shadow-sm duration-150 ease-out hover:bg-red-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 active:scale-105"
                   >
                     Remover

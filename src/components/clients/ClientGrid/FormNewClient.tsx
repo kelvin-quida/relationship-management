@@ -7,19 +7,27 @@ import { Modal } from '@/components/ui/Modal'
 import SelectContainer from '@/components/ui/SelectItem'
 import Button from '@/components/ui/Button'
 import { useState } from 'react'
+import { getOffices } from '@/queries/getOffices'
+import { useQuery } from '@tanstack/react-query'
 
 const AddClientSchema = z.object({
   name: z.string(),
   email: z.string(),
   phone: z.string(),
   address: z.string(),
-  role: z.string().nullable().default(null),
-  officeId: z.string().nullable().default(null),
+  role: z.string().optional(),
+  office: z.string().optional(),
+  officeId: z.string().optional(),
 })
 
 type AddClientData = z.infer<typeof AddClientSchema>
 
 export function FormNewClient() {
+  const { data: offices } = useQuery({
+    queryKey: ['offices'],
+    queryFn: getOffices,
+  })
+
   const {
     register,
     handleSubmit,
@@ -32,11 +40,12 @@ export function FormNewClient() {
   console.log(errors)
 
   async function handleAddClientSubmit({
+    name,
     email,
     address,
-    name,
     phone,
     role,
+    office,
     officeId,
   }: AddClientData) {
     const { token } = parseCookies()
@@ -44,11 +53,12 @@ export function FormNewClient() {
     const { status, data } = await axios.post(
       'http://localhost:3000/api/client/create',
       {
+        name,
         email,
         address,
-        name,
         phone,
         role,
+        office,
         officeId,
       },
       {
@@ -90,7 +100,11 @@ export function FormNewClient() {
             control={control}
             name="officeId"
             render={({ field: { onChange, value } }) => (
-              <SelectContainer onValueChange={onChange} value={value ?? ''} />
+              <SelectContainer
+                options={offices}
+                onValueChange={onChange}
+                value={value ?? ''}
+              />
             )}
           />
           <Button className="z-50" type="submit">
