@@ -11,11 +11,11 @@ type Props = {
 
 export const SelectContainer = ({ onValueChange, value, options }: Props) => (
   <Select.Root onValueChange={onValueChange} value={value}>
-    <Select.Trigger
-      className="inline-flex h-[35px] items-center justify-center gap-[5px] rounded bg-white px-[15px] text-[13px] leading-none text-emerald-500 shadow-[0_2px_10px] shadow-black/10 outline-none hover:bg-neutral-700 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-emerald-500"
-      aria-label="Food"
-    >
-      <Select.Value placeholder="Select a fruit…" />
+    <Select.Trigger className="inline-flex h-[35px] w-full items-center justify-center gap-[5px] rounded bg-white px-[15px] text-[13px] leading-none text-emerald-500 shadow-[0_2px_10px] shadow-black/10 outline-none hover:bg-neutral-700 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-emerald-500">
+      <Select.Value
+        placeholder="Selecione um Escritório"
+        className="placeholder:text-black"
+      />
       <Select.Icon className="text-emerald-500">
         <ChevronDownIcon />
       </Select.Icon>
@@ -27,8 +27,8 @@ export const SelectContainer = ({ onValueChange, value, options }: Props) => (
         </Select.ScrollUpButton>
         <Select.Viewport className="p-[5px]">
           <Select.Group>
-            <Select.Label className="px-[25px] text-xs leading-[25px] text-white">
-              Fruits
+            <Select.Label className="px-[25px] text-xs leading-[25px] text-black">
+              Selecione um Escritório
             </Select.Label>
 
             {options?.map((data, index) => (

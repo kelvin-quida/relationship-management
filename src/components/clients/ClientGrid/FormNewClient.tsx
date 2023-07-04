@@ -8,7 +8,7 @@ import SelectContainer from '@/components/ui/SelectItem'
 import Button from '@/components/ui/Button'
 import { useState } from 'react'
 import { getOffices } from '@/queries/getOffices'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const AddClientSchema = z.object({
   name: z.string(),
@@ -23,6 +23,8 @@ const AddClientSchema = z.object({
 type AddClientData = z.infer<typeof AddClientSchema>
 
 export function FormNewClient() {
+  const queryClient = useQueryClient()
+
   const { data: offices } = useQuery({
     queryKey: ['offices'],
     queryFn: getOffices,
@@ -39,7 +41,7 @@ export function FormNewClient() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   console.log(errors)
 
-  async function handleAddClientSubmit({
+  async function handleAddClient({
     name,
     email,
     address,
@@ -50,7 +52,7 @@ export function FormNewClient() {
   }: AddClientData) {
     const { token } = parseCookies()
 
-    const { status, data } = await axios.post(
+    const { data } = await axios.post(
       'http://localhost:3000/api/client/create',
       {
         name,
@@ -68,19 +70,52 @@ export function FormNewClient() {
       },
     )
 
-    if (status === 200) {
-      setIsModalOpen(false)
-    }
-
-    console.log(data)
+    return data
   }
+
+  async function handleAddClientSubmit({
+    name,
+    email,
+    address,
+    phone,
+    role,
+    office,
+    officeId,
+  }: AddClientData) {
+    mutation.mutate(
+      {
+        name,
+        email,
+        address,
+        phone,
+        role,
+        office,
+        officeId,
+      },
+      {
+        onSuccess: () => {
+          setIsModalOpen(false)
+        },
+      },
+    )
+  }
+
+  const mutation = useMutation({
+    mutationFn: handleAddClient,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['clients'])
+    },
+  })
 
   return (
     <>
-      <Button onClick={() => setIsModalOpen(true)}>Adicionar Client</Button>
+      <Button color="primary" onClick={() => setIsModalOpen(true)}>
+        Adicionar Client
+      </Button>
 
       <Modal isOpen={isModalOpen}>
         <Button
+          color="primary"
           className="absolute right-4 top-4"
           onClick={() => setIsModalOpen(false)}
         >
@@ -107,7 +142,7 @@ export function FormNewClient() {
               />
             )}
           />
-          <Button className="z-50" type="submit">
+          <Button color="primary" className="z-50" type="submit">
             Enviar
           </Button>
         </form>

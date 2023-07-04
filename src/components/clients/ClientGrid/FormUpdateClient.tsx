@@ -64,10 +64,13 @@ export function FormUpdateClient({ data }: Props) {
 
   return (
     <>
-      <Button onClick={() => setIsModalOpen(true)}>Editar</Button>
+      <Button color="primary" onClick={() => setIsModalOpen(true)}>
+        Editar
+      </Button>
 
       <Modal isOpen={isModalOpen}>
         <Button
+          color="primary"
           className="absolute right-4 top-4"
           onClick={() => setIsModalOpen(false)}
         >
@@ -109,7 +112,9 @@ export function FormUpdateClient({ data }: Props) {
             defaultValue={data.role}
             {...register('role')}
           />
-          <Button type="submit">ENVIA AI MANO</Button>
+          <Button color="primary" type="submit">
+            ENVIA AI MANO
+          </Button>
         </form>
       </Modal>
     </>

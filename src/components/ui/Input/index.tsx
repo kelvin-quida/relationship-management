@@ -1,44 +1,30 @@
-import { InputHTMLAttributes, ReactNode } from 'react'
+import { InputHTMLAttributes } from 'react'
 import { tv } from 'tailwind-variants'
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   className?: string
-  href: string
-  children: ReactNode
+  color: 'primary'
 }
 
 const input = tv({
-  base: 'rounded-full bg-blue-500 font-medium text-white active:opacity-80',
+  base: 'block h-10 w-80 rounded-lg p-2 pl-10 text-sm',
   variants: {
     color: {
-      primary: 'bg-blue-500 text-white',
-      secondary: 'bg-purple-500 text-white',
-    },
-    size: {
-      sm: 'text-sm',
-      md: 'text-base',
-      lg: 'px-4 py-3 text-lg',
+      primary:
+        'border border-transparent bg-neutral-900/60 text-neutral-200 placeholder:text-gray-500 focus:border-emerald-500 focus:ring-emerald-500',
     },
   },
-  compoundVariants: [
-    {
-      size: ['sm', 'md'],
-      class: 'px-3 py-1',
-    },
-  ],
   defaultVariants: {
-    size: 'md',
     color: 'primary',
   },
 })
 
-export default function Input({ className, children, href, ...rest }: Props) {
+export default function Input({ className, color, ...rest }: Props) {
   return (
     <input
       {...rest}
       className={input({
-        size: 'sm',
-        color: 'secondary',
+        color,
         className,
       })}
     />

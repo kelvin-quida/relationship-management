@@ -16,9 +16,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <>
       <GlobalProvider>
-        <div className='flex'>
+        <div className="flex h-screen overflow-hidden">
           <Sidebar />
-          <div className="flex flex-col bg-neutral-900 w-full min-h-screen">
+          <div className="flex h-screen w-full flex-col overflow-hidden bg-neutral-900">
             {children}
           </div>
         </div>
