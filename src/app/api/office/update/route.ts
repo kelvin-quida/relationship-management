@@ -26,10 +26,10 @@ export async function PATCH(req: NextRequest) {
   })
 
   if (!findOffice) {
-    return NextResponse.json('Client não exists')
+    return NextResponse.json('Office não exists')
   }
 
-  const client = await prisma.office.update({
+  const office = await prisma.office.update({
     where: {
       id,
     },
@@ -43,5 +43,5 @@ export async function PATCH(req: NextRequest) {
     },
   })
 
-  return NextResponse.json(client)
+  return NextResponse.json(office)
 }

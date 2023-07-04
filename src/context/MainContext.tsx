@@ -5,7 +5,11 @@ interface GlobalContextProps {
   isDialogOpen: boolean
   openDialog: () => void
   closeDialog: () => void
-  
+
+  isModalOpen: boolean
+  openModal: () => void
+  closeModal: () => void
+
   setClientDataContext: (data: TClient | undefined) => void
   clientData: TClient | undefined
 
@@ -13,11 +17,11 @@ interface GlobalContextProps {
   officeData: TOffice | undefined
 }
 
-
 const GlobalContext = createContext<GlobalContextProps | undefined>(undefined)
 
 function GlobalProvider(props: { children: React.ReactNode }) {
   const [isDialogOpen, setisDialogOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [clientData, setClientData] = useState<TClient>()
   const [officeData, setOfficeData] = useState<TOffice>()
 
@@ -29,19 +33,36 @@ function GlobalProvider(props: { children: React.ReactNode }) {
     setisDialogOpen(false)
   }
 
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
+
   const setClientDataContext = (data: TClient | undefined) => {
     setClientData(data)
   }
 
-   const setOfficeDataContext = (data: TOffice | undefined) => {
+  const setOfficeDataContext = (data: TOffice | undefined) => {
     setOfficeData(data)
   }
 
-  
-
   return (
     <GlobalContext.Provider
-      value={{ isDialogOpen, openDialog, closeDialog, clientData, officeData, setClientDataContext, setOfficeDataContext }}
+      value={{
+        isDialogOpen,
+        openDialog,
+        closeDialog,
+        clientData,
+        officeData,
+        setClientDataContext,
+        setOfficeDataContext,
+        isModalOpen,
+        openModal,
+        closeModal,
+      }}
     >
       {props.children}
     </GlobalContext.Provider>

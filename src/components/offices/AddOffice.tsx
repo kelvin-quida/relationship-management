@@ -73,8 +73,16 @@ export function AddOffice() {
             onSubmit={handleSubmit(handleAddOfficeSubmit)}
           >
             <input type="text" placeholder="name" {...register('name')} />
-            <input type="text" placeholder="description" {...register('description')} />
-            <input type="text" placeholder="location" {...register('location')} />
+            <input
+              type="text"
+              placeholder="description"
+              {...register('description')}
+            />
+            <input
+              type="text"
+              placeholder="location"
+              {...register('location')}
+            />
             <input type="email" placeholder="email" {...register('email')} />
             <input type="text" placeholder="phone" {...register('phone')} />
             <button type="submit">Enviar</button>

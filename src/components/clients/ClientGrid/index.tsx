@@ -5,10 +5,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { parseCookies } from 'nookies'
 import { useDataContext } from '@/context/MainContext'
-import { AddClient } from './AddClients'
-import { UpdateClient } from './UpdateClient'
-import SliderModal from '../ui/SliderModal'
-import SelectItem from '../ui/SelectItem'
+import SliderModal from '@/components/ui/SliderModal'
+import { FormNewClient } from './FormNewClient'
+import { FormUpdateClient } from './FormUpdateClient'
 
 const filterTitles = [
   { title: 'Sel' },
@@ -94,8 +93,7 @@ export default function ClientGrid() {
               placeholder="Buscar cliente"
             />
           </div>
-          <AddClient />
-          <SelectItem />
+          <FormNewClient />
         </div>
         <table className="w-full text-sm text-gray-500 dark:text-gray-400">
           <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -148,7 +146,7 @@ export default function ClientGrid() {
                 <td className="p-4">{data.phone}</td>
                 <td className="p-4">{data.role}</td>
                 <td className="flex items-center justify-start gap-2 p-4">
-                  <UpdateClient data={data} />
+                  <FormUpdateClient data={data} />
                   <button
                     onClick={() => mutation.mutate(data.id)}
                     className="flex w-max justify-center rounded-md border border-red-500 bg-red-100 px-4 py-2 text-xs font-semibold leading-6 text-red-800 shadow-sm duration-150 ease-out hover:bg-red-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 active:scale-105"
