@@ -2,7 +2,6 @@
 import { getClients } from '@/queries/getClients'
 import { TClientWithOffice } from '@/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 import { parseCookies } from 'nookies'
 import { useDataContext } from '@/context/MainContext'
 import SliderModal from '@/components/ui/SliderModal'
@@ -14,6 +13,15 @@ import * as ScrollArea from '@radix-ui/react-scroll-area'
 import Button from '@/components/ui/Button'
 import DeleteModal from '@/components/ui/Modal/DeleteModal'
 import { api } from '@/lib/api'
+
+const filterTitles = [
+  { title: 'Sel' },
+  { title: 'Nome' },
+  { title: 'Escritório' },
+  { title: 'Telefone' },
+  { title: 'Role' },
+  { title: 'Ações' },
+]
 
 export default function ClientGrid() {
   const { openDialog, setClientDataContext } = useDataContext()
@@ -99,106 +107,76 @@ export default function ClientGrid() {
               <table className="h-full w-full text-sm text-neutral-400">
                 <thead className="text-xs uppercase">
                   <tr>
-                    <th scope="col">
-                      <div className="flex w-full items-center justify-start">
-                        <p className="w-full bg-neutral-800/50 p-2 text-left text-neutral-400">
-                          Sel
-                        </p>
-                      </div>
-                    </th>
-                    <th scope="col" className="w-1/3">
-                      <div className="flex w-full items-center justify-start">
-                        <p className="w-full bg-neutral-800/50 p-2 text-left text-neutral-400">
-                          Nome
-                        </p>
-                      </div>
-                    </th>
-                    <th scope="col" className="w-1/4">
-                      <div className="flex w-full items-center justify-start">
-                        <p className="w-full bg-neutral-800/50 p-2 text-left text-neutral-400">
-                          Escritório
-                        </p>
-                      </div>
-                    </th>
-                    <th scope="col" className="w-1/4">
-                      <div className="flex w-full items-center justify-start">
-                        <p className="w-full bg-neutral-800/50 p-2 text-left text-neutral-400">
-                          Telefone
-                        </p>
-                      </div>
-                    </th>
-                    <th scope="col" className="w-1/4">
-                      <div className="flex w-full items-center justify-start">
-                        <p className="w-full bg-neutral-800/50 p-2 text-left text-neutral-400">
-                          Role
-                        </p>
-                      </div>
-                    </th>
-                    <th scope="col">
-                      <div className="flex w-full items-center justify-start">
-                        <p className="w-full bg-neutral-800/50 p-2 text-left text-zinc-400">
-                          Ações
-                        </p>
-                      </div>
-                    </th>
+                    {filterTitles.map((item, index) => (
+                      <>
+                        <th key={index} scope="col" className="p-4">
+                          <div className="flex w-full items-center justify-start">
+                            <p className="text-center text-zinc-500">
+                              {item.title}
+                            </p>
+                          </div>
+                        </th>
+                      </>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {clients?.map((item, index) => 
-                    { console.log(item.office) 
-                      return (
-                    <tr
-                      key={index}
-                      className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out"
-                    >
-                      <td className="w-4 p-4">
-                        <div className="flex items-center">
-                          <input
-                            id="checkbox-table-search-1"
-                            type="checkbox"
-                            className="h-4 w-4 cursor-pointer rounded border-neutral-700 bg-neutral-800 text-emerald-600 focus:ring-2 focus:ring-emerald-500"
-                          />
-                          <label
-                            htmlFor="checkbox-table-search-1"
-                            className="sr-only"
-                          >
-                            checkbox
-                          </label>
-                        </div>
-                      </td>
-                      <th
-                        scope="row"
-                        onClick={() => handleOpenModal(item)}
-                        className="flex flex-col items-start justify-center gap-1 whitespace-nowrap  rounded-lg border border-transparent p-4 font-medium text-neutral-500 duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800"
+                  {clients?.map((item, index) => {
+                    console.log(item.office)
+                    return (
+                      <tr
+                        key={index}
+                        className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out"
                       >
-                        <h4 className="text-sm font-bold text-neutral-100">
-                          {item.name}
-                        </h4>
-                        <p className=" text-sm font-normal text-neutral-500">
-                          {item.email}
-                        </p>
-                      </th>
-                      <td className=" p-4 text-left">
-                        {item.office?.name ?? 'Tem não'}
-                      </td>
-                      <td className=" p-4">{item.phone}</td>
-                      <td className=" p-4">{item.role}</td>
-                      <td className="flex items-center justify-end gap-2 p-4">
-                        <FormUpdateClient data={item} />
-                        <DeleteModal
-                          title="Remover cliente"
-                          description="Tem certeza que deseja remover o cliente?"
+                        <td className="w-4 p-4">
+                          <div className="flex items-center">
+                            <input
+                              id="checkbox-table-search-1"
+                              type="checkbox"
+                              className="h-4 w-4 cursor-pointer rounded border-neutral-700 bg-neutral-800 text-emerald-600 focus:ring-2 focus:ring-emerald-500"
+                            />
+                            <label
+                              htmlFor="checkbox-table-search-1"
+                              className="sr-only"
+                            >
+                              checkbox
+                            </label>
+                          </div>
+                        </td>
+                        <th
+                          scope="row"
+                          onClick={() => handleOpenModal(item)}
+                          className="flex flex-col items-start justify-center gap-1 whitespace-nowrap  rounded-lg border border-transparent p-4 font-medium text-neutral-500 duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800"
                         >
-                          <Button
-                            onClick={() => mutation.mutate(item.id)}
-                            color="warn"
+                          <h4 className="text-sm font-bold text-neutral-100">
+                            {item.name}
+                          </h4>
+                          <p className=" text-sm font-normal text-neutral-500">
+                            {item.email}
+                          </p>
+                        </th>
+                        <td className=" p-4 text-left">
+                          {item.office?.name ?? 'Tem não'}
+                        </td>
+                        <td className=" p-4">{item.phone}</td>
+                        <td className=" p-4">{item.role}</td>
+                        <td className="flex items-center justify-end gap-2 p-4">
+                          <FormUpdateClient data={item} />
+                          <DeleteModal
+                            title="Remover cliente"
+                            description="Tem certeza que deseja remover o cliente?"
                           >
-                            Remover
-                          </Button>
-                        </DeleteModal>
-                      </td>
-                    </tr>)}
-                  )}
+                            <Button
+                              onClick={() => mutation.mutate(item.id)}
+                              color="warn"
+                            >
+                              Remover
+                            </Button>
+                          </DeleteModal>
+                        </td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </ScrollArea.Viewport>

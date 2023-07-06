@@ -1,12 +1,12 @@
 import React from 'react'
 import * as Select from '@radix-ui/react-select'
 import { ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons'
-import { TOffice } from '@/types'
+import { TOfficeWithClient } from '@/types'
 
 type Props = {
   onValueChange: (value: string) => void
   value: string
-  options: TOffice[] | undefined
+  options: TOfficeWithClient[] | undefined
 }
 
 export const SelectContainer = ({ onValueChange, value, options }: Props) => (
