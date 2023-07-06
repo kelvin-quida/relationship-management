@@ -16,9 +16,9 @@ const nav = tv({
   variants: {
     color: {
       primary:
-        'border border-transparent duration-150 ease-out hover:border-neutral-500 hover:bg-zinc-800',
+        'border border-transparent duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800',
       warn: 'border border-transparent duration-150 ease-out hover:border-red-500 hover:bg-red-950',
-      active: 'border border-neutral-500 bg-neutral-800 duration-150 ease-out',
+      active: 'border border-neutral-700 bg-neutral-800 duration-150 ease-out',
     },
     size: {
       sm: 'text-sm',

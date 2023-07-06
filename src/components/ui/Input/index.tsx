@@ -1,4 +1,4 @@
-import { InputHTMLAttributes } from 'react'
+import { InputHTMLAttributes, forwardRef } from 'react'
 import { tv } from 'tailwind-variants'
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
@@ -7,11 +7,11 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
 }
 
 const input = tv({
-  base: 'block h-10 w-80 rounded-lg p-2 pl-10 text-sm',
+  base: 'block h-10 w-80 rounded-lg px-4 text-sm',
   variants: {
     color: {
       primary:
-        'border border-transparent bg-neutral-900/60 text-neutral-200 placeholder:text-gray-500 focus:border-emerald-500 focus:ring-emerald-500',
+        'border border-neutral-700/50 bg-neutral-800/50 text-neutral-200 placeholder:text-neutral-500 focus:border-emerald-500 focus:ring-emerald-500',
     },
   },
   defaultVariants: {
@@ -19,14 +19,21 @@ const input = tv({
   },
 })
 
-export default function Input({ className, color, ...rest }: Props) {
-  return (
-    <input
-      {...rest}
-      className={input({
-        color,
-        className,
-      })}
-    />
-  )
-}
+const Input = forwardRef<HTMLInputElement, Props>(
+  ({ className, color, ...rest }, ref) => {
+    return (
+      <input
+        {...rest}
+        ref={ref}
+        className={input({
+          color,
+          className,
+        })}
+      />
+    )
+  },
+)
+
+Input.displayName = 'Input'
+
+export default Input

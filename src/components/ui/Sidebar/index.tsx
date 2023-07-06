@@ -44,7 +44,7 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="relative z-30 flex h-screen flex-col items-center justify-start gap-4 bg-neutral-950 px-3 py-6">
+      <div className="relative z-30 flex h-screen flex-col items-center justify-start gap-4 border-r border-neutral-800 bg-neutral-900 px-3 py-6">
         <RectangleStackIcon className="h-16 w-12 cursor-pointer text-emerald-400 duration-300 ease-out hover:scale-110 hover:text-orange-400" />
         <div className="my-2 h-px w-full bg-neutral-800" />
         {navigation.map(({ name, href, icon }, index) => (

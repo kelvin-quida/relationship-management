@@ -1,3 +1,4 @@
+'use client'
 import { z } from 'zod'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,12 +10,14 @@ import Button from '@/components/ui/Button'
 import { useState } from 'react'
 import { getOffices } from '@/queries/getOffices'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import Input from '@/components/ui/Input'
+import { api } from '@/lib/api'
 
 const AddClientSchema = z.object({
-  name: z.string(),
-  email: z.string(),
-  phone: z.string(),
-  address: z.string(),
+  name: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  address: z.string().optional(),
   role: z.string().optional(),
   office: z.string().optional(),
   officeId: z.string().optional(),
@@ -41,28 +44,12 @@ export function FormNewClient() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   console.log(errors)
 
-  async function handleAddClient({
-    name,
-    email,
-    address,
-    phone,
-    role,
-    office,
-    officeId,
-  }: AddClientData) {
+  async function handleAddClient(payload: AddClientData) {
     const { token } = parseCookies()
 
-    const { data } = await axios.post(
-      'http://localhost:3000/api/client/create',
-      {
-        name,
-        email,
-        address,
-        phone,
-        role,
-        office,
-        officeId,
-      },
+    const { data } = await api.post(
+      '/client/create',
+      payload,
       {
         headers: {
           Authorization: `${token}`,
@@ -73,25 +60,9 @@ export function FormNewClient() {
     return data
   }
 
-  async function handleAddClientSubmit({
-    name,
-    email,
-    address,
-    phone,
-    role,
-    office,
-    officeId,
-  }: AddClientData) {
+  async function handleAddClientSubmit(payload: AddClientData) {
     mutation.mutate(
-      {
-        name,
-        email,
-        address,
-        phone,
-        role,
-        office,
-        officeId,
-      },
+      payload,
       {
         onSuccess: () => {
           setIsModalOpen(false)
@@ -109,28 +80,40 @@ export function FormNewClient() {
 
   return (
     <>
-      <Button color="primary" onClick={() => setIsModalOpen(true)}>
-        Adicionar Client
-      </Button>
-
-      <Modal isOpen={isModalOpen}>
-        <Button
-          color="primary"
-          className="absolute right-4 top-4"
-          onClick={() => setIsModalOpen(false)}
-        >
-          Fechar
-        </Button>
-
+      <Modal
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        buttonTitle="Adicionar Cliente"
+      >
         <form
           className="flex flex-col items-center justify-start gap-3"
           onSubmit={handleSubmit(handleAddClientSubmit)}
         >
           <h1>New Client</h1>
-          <input type="text" placeholder="name" {...register('name')} />
-          <input type="email" placeholder="email" {...register('email')} />
-          <input type="text" placeholder="phone" {...register('phone')} />
-          <input type="text" placeholder="address" {...register('address')} />
+          <Input
+            color="primary"
+            type="text"
+            placeholder="Nome"
+            {...register('name')}
+          />
+          <Input
+            color="primary"
+            type="email"
+            placeholder="Email"
+            {...register('email')}
+          />
+          <Input
+            color="primary"
+            type="text"
+            placeholder="Telefone"
+            {...register('phone')}
+          />
+          <Input
+            color="primary"
+            type="text"
+            placeholder="Endereço"
+            {...register('address')}
+          />
           <Controller
             control={control}
             name="officeId"

@@ -2,20 +2,22 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import axios from 'axios'
 import { parseCookies } from 'nookies'
 import { TClient } from '@/types'
 import { Modal } from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
+import Input from '@/components/ui/Input'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { api } from '@/lib/api'
 import { useState } from 'react'
 
 const UpdateClientSchema = z.object({
-  name: z.string(),
-  email: z.string(),
-  phone: z.string(),
-  address: z.string(),
-  role: z.string(),
-  officeId: z.string(),
+  name: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  role: z.string().optional(),
+  officeId: z.string().optional(),
 })
 
 type UpdateClientData = z.infer<typeof UpdateClientSchema>
@@ -25,89 +27,90 @@ type Props = {
 }
 
 export function FormUpdateClient({ data }: Props) {
-  const { register, handleSubmit } = useForm<UpdateClientData>({
-    resolver: zodResolver(UpdateClientSchema),
-  })
+  const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  async function handleUpdateClient({
-    email,
-    address,
-    name,
-    phone,
-    role,
-    officeId,
-  }: UpdateClientData) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UpdateClientData>({
+    resolver: zodResolver(UpdateClientSchema),
+  })
+
+  console.log(errors)
+
+  async function handleUpdateClient(payload: UpdateClientData) {
     const { token } = parseCookies()
 
-    const { status } = await axios.patch(
-      `http://localhost:3000/api/client/update?id=${data.id}`,
-      {
-        email,
-        address,
-        name,
-        phone,
-        role,
-        officeId,
-      },
+   await api.patch(
+      `/client/update?id=${data.id}`,
+      payload,
       {
         headers: {
           Authorization: `${token}`,
         },
       },
     )
-
-    if (status === 200) {
-      setIsModalOpen(false)
-    }
   }
+
+  async function handleUpdateClientSubmit(payload: UpdateClientData) {
+     mutation.mutate(
+      payload,
+      {
+        onSuccess: () => {
+          setIsModalOpen(false)
+        },
+      },
+    )
+  }
+
+  const mutation = useMutation({
+    mutationFn: handleUpdateClient,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['clients'])
+    },
+  })
 
   return (
     <>
-      <Button color="primary" onClick={() => setIsModalOpen(true)}>
-        Editar
-      </Button>
-
-      <Modal isOpen={isModalOpen}>
-        <Button
-          color="primary"
-          className="absolute right-4 top-4"
-          onClick={() => setIsModalOpen(false)}
-        >
-          Fechar
-        </Button>
-
+      <Modal isOpen={isModalOpen} onOpenChange={setIsModalOpen} buttonTitle="Editar">
         <form
           className="flex flex-col items-center justify-start gap-3"
-          onSubmit={handleSubmit(handleUpdateClient)}
+          onSubmit={handleSubmit(handleUpdateClientSubmit)}
         >
           <h1>Editar</h1>
-          <input
+          <Input
+          color='primary'
             type="text"
             placeholder="name"
             defaultValue={data.name}
             {...register('name')}
           />
-          <input
+          <Input
             type="email"
+            color='primary'
             placeholder="email"
             defaultValue={data.email}
             {...register('email')}
           />
-          <input
+          <Input
             type="text"
+            color='primary'
             placeholder="phone"
             defaultValue={data.phone}
             {...register('phone')}
           />
-          <input
+          <Input
             type="text"
+            color='primary'
             placeholder="address"
             defaultValue={data.address}
             {...register('address')}
           />
-          <input
+          <Input
             type="text"
+            color='primary'
             placeholder="role"
             defaultValue={data.role}
             {...register('role')}
