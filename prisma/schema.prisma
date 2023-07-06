@@ -25,7 +25,12 @@ model Client {
   roleAge   Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  officeId  String?
+
+  social Social[]
+
+  Office   Office? @relation(fields: [officeId], references: [id])
+  officeId String?
+
 }
 
 model Social {
@@ -33,7 +38,9 @@ model Social {
   instagram String?
   facebook  String?
   twitter   String?
-  clientId  String?
+
+  Client   Client? @relation(fields: [clientId], references: [id])
+  clientId String?
 }
 
 model Office {
@@ -46,6 +53,9 @@ model Office {
   website     String?  @unique
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  historyGift Gift[]
+  client      Client[]
 }
 
 model Gift {
@@ -53,5 +63,7 @@ model Gift {
   name        String
   description String?
   sendDate    Int?
-  officeId    String?
+
+  Office   Office? @relation(fields: [officeId], references: [id])
+  officeId String?
 }
