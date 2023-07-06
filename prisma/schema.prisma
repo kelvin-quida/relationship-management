@@ -31,6 +31,8 @@ model Client {
 
   Office   Office? @relation(fields: [officeId], references: [id])
   officeId String?
+
+  @@index([officeId])
 }
 
 model Social {
@@ -41,6 +43,8 @@ model Social {
 
   Client   Client? @relation(fields: [clientId], references: [id])
   clientId String?
+
+  @@index([clientId])
 }
 
 model Office {
@@ -66,4 +70,6 @@ model Gift {
 
   Office   Office? @relation(fields: [officeId], references: [id])
   officeId String?
+
+  @@index([officeId])
 }
