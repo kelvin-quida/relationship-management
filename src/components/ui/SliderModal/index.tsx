@@ -4,13 +4,14 @@ import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { useDataContext } from '@/context/MainContext'
+import Button from '../Button'
 
 export default function SliderModal() {
-  const { isDialogOpen, closeDialog, officeData, clientData } = useDataContext()
+  const { isDialogOpen, closeDialog, officeData, openDialog, clientData } = useDataContext()
 
   return (
     <Transition.Root show={isDialogOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeDialog}>
+      <Dialog as="div" className="relative z-10" onClose={openDialog} >
         <Transition.Child
           as={Fragment}
           enter="ease-in-out duration-500"
@@ -20,7 +21,7 @@ export default function SliderModal() {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-zinc-700/60 backdrop-blur-[2px] transition-opacity" />
+          <div className="fixed inset-0 bg-neutral-950/60 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-hidden">
@@ -35,7 +36,7 @@ export default function SliderModal() {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="pointer-events-auto relative w-screen max-w-md">
+                <Dialog.Panel className="pointer-events-auto relative w-[80vw]">
                   <Transition.Child
                     as={Fragment}
                     enter="ease-in-out duration-500"
@@ -45,26 +46,21 @@ export default function SliderModal() {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
-                      <button
+                    <div className="absolute left-4 top-4">
+                      <Button
                         type="button"
-                        className="rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                        color='neutral'
                         onClick={closeDialog}
-                      >
-                        <span className="sr-only">Close panel</span>
-                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                      </button>
+                      >Fechar</Button>
                     </div>
                   </Transition.Child>
-                  <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
-                    <div className="px-4 sm:px-6">
-                      <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
-                        {clientData ? (
-                          <p>{JSON.stringify(clientData)}</p>
+                  <div className="flex h-screen overflow-auto w-full flex-col bg-background border p-4 pt-16 border-neutral-800 rounded-l-3xl py-6 ">
+                    <div className="px-4 sm:px-6 text-white">
+                      <p> {clientData ? (
+                          <p className='text-white'>{JSON.stringify(clientData)}</p>
                         ) : (
                           <p>{JSON.stringify(officeData)}</p>
-                        )}
-                      </Dialog.Title>
+                        )}</p>
                     </div>
                   </div>
                 </Dialog.Panel>
