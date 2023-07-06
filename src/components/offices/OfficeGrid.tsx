@@ -1,13 +1,18 @@
 'use client'
 import { getOffices } from '@/queries/getOffices'
-import { TOffice } from '@/types'
+import { TOfficeWithClient } from '@/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 import { parseCookies } from 'nookies'
 import { useDataContext } from '@/context/MainContext'
-import { AddOffice } from './AddOffice'
+import { FormNewOffice } from './FormNewOffice'
 import SliderModal from '../ui/SliderModal'
-import { UpdateOffice } from './UpdateOffice'
+import { FormUpdateOffice } from './FormUpdateOffice'
+import { api } from '@/lib/api'
+import Box from '../ui/Box'
+import Input from '../ui/Input'
+import * as ScrollArea from '@radix-ui/react-scroll-area'
+import DeleteModal from '../ui/Modal/DeleteModal'
+import Button from '../ui/Button'
 
 const filterTitles = [
   { title: 'Sel' },
@@ -31,7 +36,7 @@ export default function OfficeGrid() {
   async function handleRemoveOffice(id: string) {
     const { token } = parseCookies()
 
-    await axios.delete(`http://localhost:3000/api/office/delete?id=${id}`, {
+    await api.delete(`office/delete?id=${id}`, {
       headers: {
         Authorization: `${token}`,
       },
@@ -44,7 +49,7 @@ export default function OfficeGrid() {
       await queryClient.cancelQueries({ queryKey: ['offices'] })
       const previousClients = queryClient.getQueryData(['offices'])
 
-      queryClient.setQueryData<TOffice[]>(['offices'], (old) => {
+      queryClient.setQueryData<TOfficeWithClient[]>(['offices'], (old) => {
         return old?.filter(({ id }) => id !== clientID)
       })
 
@@ -58,7 +63,7 @@ export default function OfficeGrid() {
     },
   })
 
-  function handleOpenModal(data: TOffice) {
+  function handleOpenModal(data: TOfficeWithClient) {
     openDialog()
     setOfficeDataContext(data)
   }
@@ -66,14 +71,13 @@ export default function OfficeGrid() {
   return (
     <>
       <SliderModal />
-
-      <div className="relative w-full overflow-x-auto border  border-slate-200 bg-white p-6 sm:rounded-lg">
-        <div className="flex items-center justify-between pb-4">
-          {/* Dropdown */}
+      <Box className="relative h-full overflow-hidden">
+        <div className="z-50 flex w-full items-center justify-between bg-neutral-900 pb-6 pt-0 duration-150 ease-out">
+          {/* Dropdown Insert */}
           <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
               <svg
-                className="h-5 w-5 text-gray-500 dark:text-gray-400"
+                className="h-5 w-5 text-neutral-500 dark:text-neutral-400"
                 aria-hidden="true"
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -86,80 +90,99 @@ export default function OfficeGrid() {
                 ></path>
               </svg>
             </div>
-            <input
+            <Input
+              color="primary"
               type="text"
               id="table-search"
-              className="block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-orange-500 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-orange-500 dark:focus:ring-orange-500"
               placeholder="Buscar cliente"
+              className="pl-10"
             />
           </div>
-          <AddOffice />
+          <FormNewOffice />
         </div>
-        <table className="w-full text-sm text-gray-500 dark:text-gray-400">
-          <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              {filterTitles.map((item, index) => (
-                <>
-                  <th key={index} scope="col" className="p-4">
-                    <div className="flex w-full items-center justify-start">
-                      <p className="text-center text-zinc-500">{item.title}</p>
-                    </div>
-                  </th>
-                </>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {offices?.map((data, index) => (
-              <tr
-                key={index}
-                className="cursor-pointer select-none rounded-lg bg-white duration-150 ease-out dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
-              >
-                <td className="w-4 p-4">
-                  <div className="flex items-center">
-                    <input
-                      id="checkbox-table-search-1"
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-orange-600 focus:ring-2 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-orange-600 dark:focus:ring-offset-gray-800"
-                    />
-                    <label
-                      htmlFor="checkbox-table-search-1"
-                      className="sr-only"
+        <div className="h-[calc(100%-60px)] w-full overflow-hidden">
+          <ScrollArea.Root className="h-full w-full">
+            <ScrollArea.Viewport className="h-full w-full scroll-pb-10">
+              <table className="h-full w-full text-sm text-neutral-400">
+                <thead className="text-xs uppercase">
+                  <tr>
+                    {filterTitles.map((item, index) => (
+                      <th key={index} scope="col" className="p-4">
+                        <div className="flex w-full items-center justify-start">
+                          <p className="text-center text-zinc-500">
+                            {item.title}
+                          </p>
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {offices?.map((data, index) => (
+                    <tr
+                      key={index}
+                      className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out"
                     >
-                      checkbox
-                    </label>
-                  </div>
-                </td>
-                <th
-                  scope="row"
-                  onClick={() => handleOpenModal(data)}
-                  className="flex flex-col items-start justify-center whitespace-nowrap rounded-lg border border-transparent p-4 font-medium text-gray-900 duration-150 ease-out hover:border-zinc-300 hover:bg-zinc-50 dark:text-white"
-                >
-                  <h4 className="text-sm font-bold text-slate-800">
-                    {data.name}
-                  </h4>
-                  <p className="text-sm font-normal text-zinc-500">
-                    {data.email}
-                  </p>
-                </th>
-                <td className="p-4">{data.location}</td>
-                <td className="p-4">{data.phone}</td>
-                <td className="p-4">{data.description}</td>
+                      <td className="w-4 p-4">
+                        <div className="flex items-center">
+                          <input
+                            id="checkbox-table-search-1"
+                            type="checkbox"
+                            className="h-4 w-4 cursor-pointer rounded border-neutral-700 bg-neutral-800 text-emerald-600 focus:ring-2 focus:ring-emerald-500"
+                          />
+                          <label
+                            htmlFor="checkbox-table-search-1"
+                            className="sr-only"
+                          >
+                            checkbox
+                          </label>
+                        </div>
+                      </td>
+                      <th
+                        scope="row"
+                        onClick={() => handleOpenModal(data)}
+                        className="flex flex-col items-start justify-center gap-1 whitespace-nowrap  rounded-lg border border-transparent p-4 font-medium text-neutral-500 duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800"
+                      >
+                        <h4 className="text-sm font-bold text-neutral-100">
+                          {data.name}
+                        </h4>
+                        <p className="text-sm font-normal text-neutral-500">
+                          {data.email}
+                        </p>
+                      </th>
+                      <td className="p-4">{data.location}</td>
+                      <td className="p-4">{data.phone}</td>
+                      <td className="p-4">{data.description}</td>
 
-                <td className="flex items-center justify-start gap-2 p-4">
-                  <UpdateOffice data={data} />
-                  <button
-                    onClick={() => mutation.mutate(data.id)}
-                    className="flex w-max justify-center rounded-md border border-red-500 bg-red-100 px-4 py-2 text-xs font-semibold leading-6 text-red-800 shadow-sm duration-150 ease-out hover:bg-red-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 active:scale-105"
-                  >
-                    Remover
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                      <td className="flex items-center justify-end gap-2 p-4">
+                        <FormUpdateOffice data={data} />
+                        <DeleteModal
+                          title="Remover Escritório"
+                          description="Tem certeza que deseja remover o escritório?"
+                        >
+                          <Button
+                            onClick={() => mutation.mutate(data.id)}
+                            color="warn"
+                          >
+                            Remover
+                          </Button>
+                        </DeleteModal>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </ScrollArea.Viewport>
+            <ScrollArea.Scrollbar
+              className="flex touch-none select-none rounded-full bg-neutral-900 transition-colors duration-[160ms] ease-out hover:bg-neutral-950 data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col"
+              orientation="vertical"
+            >
+              <ScrollArea.Thumb className="relative flex-1 rounded-full bg-emerald-700 before:absolute before:left-1/2 before:top-1/2 before:h-10 before:min-h-[14px] before:w-full before:min-w-[44px] before:-translate-x-1/2 before:-translate-y-1/2 before:content-['']" />
+            </ScrollArea.Scrollbar>
+            <ScrollArea.Corner />
+          </ScrollArea.Root>
+        </div>
+      </Box>
     </>
   )
 }

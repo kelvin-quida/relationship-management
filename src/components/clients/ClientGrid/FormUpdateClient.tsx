@@ -30,39 +30,26 @@ export function FormUpdateClient({ data }: Props) {
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<UpdateClientData>({
+  const { register, handleSubmit } = useForm<UpdateClientData>({
     resolver: zodResolver(UpdateClientSchema),
   })
-
-  console.log(errors)
 
   async function handleUpdateClient(payload: UpdateClientData) {
     const { token } = parseCookies()
 
-   await api.patch(
-      `/client/update?id=${data.id}`,
-      payload,
-      {
-        headers: {
-          Authorization: `${token}`,
-        },
+    await api.patch(`/client/update?id=${data.id}`, payload, {
+      headers: {
+        Authorization: `${token}`,
       },
-    )
+    })
   }
 
   async function handleUpdateClientSubmit(payload: UpdateClientData) {
-     mutation.mutate(
-      payload,
-      {
-        onSuccess: () => {
-          setIsModalOpen(false)
-        },
+    mutation.mutate(payload, {
+      onSuccess: () => {
+        setIsModalOpen(false)
       },
-    )
+    })
   }
 
   const mutation = useMutation({
@@ -74,14 +61,18 @@ export function FormUpdateClient({ data }: Props) {
 
   return (
     <>
-      <Modal isOpen={isModalOpen} onOpenChange={setIsModalOpen} buttonTitle="Editar">
+      <Modal
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        buttonTitle="Editar"
+      >
         <form
           className="flex flex-col items-center justify-start gap-3"
           onSubmit={handleSubmit(handleUpdateClientSubmit)}
         >
           <h1>Editar</h1>
           <Input
-          color='primary'
+            color="primary"
             type="text"
             placeholder="name"
             defaultValue={data.name}
@@ -89,28 +80,28 @@ export function FormUpdateClient({ data }: Props) {
           />
           <Input
             type="email"
-            color='primary'
+            color="primary"
             placeholder="email"
             defaultValue={data.email}
             {...register('email')}
           />
           <Input
             type="text"
-            color='primary'
+            color="primary"
             placeholder="phone"
             defaultValue={data.phone ?? ''}
             {...register('phone')}
           />
           <Input
             type="text"
-            color='primary'
+            color="primary"
             placeholder="address"
             defaultValue={data.address ?? ''}
             {...register('address')}
           />
           <Input
             type="text"
-            color='primary'
+            color="primary"
             placeholder="role"
             defaultValue={data.role ?? ''}
             {...register('role')}

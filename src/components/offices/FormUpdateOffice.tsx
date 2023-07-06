@@ -4,9 +4,9 @@ import { Dialog } from '@headlessui/react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import axios from 'axios'
 import { parseCookies } from 'nookies'
-import { TOffice } from '@/types'
+import { TOfficeWithClient } from '@/types'
+import { api } from '@/lib/api'
 
 const UpdateOfficeSchema = z.object({
   name: z.string(),
@@ -20,33 +20,21 @@ const UpdateOfficeSchema = z.object({
 type UpdateOfficeData = z.infer<typeof UpdateOfficeSchema>
 
 type Props = {
-  data: TOffice
+  data: TOfficeWithClient
 }
 
-export function UpdateOffice({ data }: Props) {
+export function FormUpdateOffice({ data }: Props) {
   const { register, handleSubmit } = useForm<UpdateOfficeData>({
     resolver: zodResolver(UpdateOfficeSchema),
   })
   const [isOpen, setIsOpen] = useState(false)
 
-  async function handleUpdateOffice({
-    name,
-    description,
-    location,
-    email,
-    phone,
-  }: UpdateOfficeData) {
+  async function handleUpdateOffice(payload: UpdateOfficeData) {
     const { token } = parseCookies()
 
-    const { status } = await axios.patch(
-      `http://localhost:3000/api/office/update?id=${data.id}`,
-      {
-        name,
-        description,
-        location,
-        email,
-        phone,
-      },
+    const { status } = await api.patch(
+      `/office/update?id=${data.id}`,
+      payload,
       {
         headers: {
           Authorization: `${token}`,

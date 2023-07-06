@@ -1,5 +1,5 @@
 'use server'
-import { TOffice } from '@/types'
+import { TOfficeWithClient } from '@/types'
 import { cookies } from 'next/headers'
 import axios from 'axios'
 
@@ -12,5 +12,5 @@ export async function getOffices() {
     },
   })
 
-  return data as TOffice[]
+  return data as TOfficeWithClient[]
 }

@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client"
+import { Prisma } from '@prisma/client'
 
 export type TClientWithOffice = Prisma.ClientGetPayload<{
   include: {
@@ -6,7 +6,7 @@ export type TClientWithOffice = Prisma.ClientGetPayload<{
   }
 }>
 
-export type TOffice = Prisma.OfficeGetPayload<{
+export type TOfficeWithClient = Prisma.OfficeGetPayload<{
   include: {
     client: true
   }

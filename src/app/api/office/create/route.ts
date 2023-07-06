@@ -1,11 +1,11 @@
-import { TOffice } from '@/types'
+import { TOfficeWithClient } from '@/types'
 import { AuthRoute } from '@/hook/authRoute'
 import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
   const { email, name, description, location, phone, website } =
-    (await req.json()) as TOffice
+    (await req.json()) as TOfficeWithClient
 
   const Auth = AuthRoute(req)
 

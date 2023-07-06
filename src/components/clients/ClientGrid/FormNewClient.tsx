@@ -2,7 +2,6 @@
 import { z } from 'zod'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import axios from 'axios'
 import { parseCookies } from 'nookies'
 import { Modal } from '@/components/ui/Modal'
 import SelectContainer from '@/components/ui/SelectItem'
@@ -33,42 +32,29 @@ export function FormNewClient() {
     queryFn: getOffices,
   })
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<AddClientData>({
+  const { register, handleSubmit, control } = useForm<AddClientData>({
     resolver: zodResolver(AddClientSchema),
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
-  console.log(errors)
 
   async function handleAddClient(payload: AddClientData) {
     const { token } = parseCookies()
 
-    const { data } = await api.post(
-      '/client/create',
-      payload,
-      {
-        headers: {
-          Authorization: `${token}`,
-        },
+    const { data } = await api.post('/client/create', payload, {
+      headers: {
+        Authorization: `${token}`,
       },
-    )
+    })
 
     return data
   }
 
   async function handleAddClientSubmit(payload: AddClientData) {
-    mutation.mutate(
-      payload,
-      {
-        onSuccess: () => {
-          setIsModalOpen(false)
-        },
+    mutation.mutate(payload, {
+      onSuccess: () => {
+        setIsModalOpen(false)
       },
-    )
+    })
   }
 
   const mutation = useMutation({
