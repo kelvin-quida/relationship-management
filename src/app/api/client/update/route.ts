@@ -1,11 +1,11 @@
-import { TClient } from '@/types'
+import { TClientWithOffice } from '@/types'
 import { AuthRoute } from '@/hook/authRoute'
 import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function PATCH(req: NextRequest) {
   const { name, address, email, phone, role, roleAge, officeId } =
-    (await req.json()) as TClient
+    (await req.json()) as TClientWithOffice
 
   const id = req.nextUrl.searchParams.get('id')
 

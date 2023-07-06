@@ -1,24 +1,16 @@
-export type TClient = {
-  id: string
-  name: string
-  email: string
-  phone?: string
-  address?: string
-  role?: string
-  roleAge?: number
-  office: string
-  officeId?: string
-}
+import { Prisma } from "@prisma/client"
 
-export type TOffice = {
-  id: string
-  name: string
-  email: string
-  description?: string
-  location?: string
-  phone?: string
-  website?: string
-}
+export type TClientWithOffice = Prisma.ClientGetPayload<{
+  include: {
+    office: true
+  }
+}>
+
+export type TOffice = Prisma.OfficeGetPayload<{
+  include: {
+    client: true
+  }
+}>
 
 export type TUser = {
   id: string

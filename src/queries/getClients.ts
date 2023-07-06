@@ -1,7 +1,8 @@
 'use server'
-import { TClient } from '@/types'
 import { cookies } from 'next/headers'
 import axios from 'axios'
+import { TClientWithOffice } from '@/types'
+
 
 export async function getClients() {
   const token = cookies().get('token')
@@ -12,5 +13,5 @@ export async function getClients() {
     },
   })
 
-  return data as TClient[]
+  return data as TClientWithOffice[]
 }

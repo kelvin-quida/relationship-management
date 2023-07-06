@@ -3,13 +3,13 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { parseCookies } from 'nookies'
-import { TClient } from '@/types'
 import { Modal } from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { useState } from 'react'
+import { Client } from '@prisma/client'
 
 const UpdateClientSchema = z.object({
   name: z.string().optional(),
@@ -23,7 +23,7 @@ const UpdateClientSchema = z.object({
 type UpdateClientData = z.infer<typeof UpdateClientSchema>
 
 type Props = {
-  data: TClient
+  data: Client
 }
 
 export function FormUpdateClient({ data }: Props) {
@@ -98,21 +98,21 @@ export function FormUpdateClient({ data }: Props) {
             type="text"
             color='primary'
             placeholder="phone"
-            defaultValue={data.phone}
+            defaultValue={data.phone ?? ''}
             {...register('phone')}
           />
           <Input
             type="text"
             color='primary'
             placeholder="address"
-            defaultValue={data.address}
+            defaultValue={data.address ?? ''}
             {...register('address')}
           />
           <Input
             type="text"
             color='primary'
             placeholder="role"
-            defaultValue={data.role}
+            defaultValue={data.role ?? ''}
             {...register('role')}
           />
           <Button color="primary" type="submit">

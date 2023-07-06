@@ -1,6 +1,6 @@
 'use client'
 import { getClients } from '@/queries/getClients'
-import { TClient } from '@/types'
+import { TClientWithOffice } from '@/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { parseCookies } from 'nookies'
@@ -13,6 +13,7 @@ import Input from '@/components/ui/Input'
 import * as ScrollArea from '@radix-ui/react-scroll-area'
 import Button from '@/components/ui/Button'
 import DeleteModal from '@/components/ui/Modal/DeleteModal'
+import { api } from '@/lib/api'
 
 export default function ClientGrid() {
   const { openDialog, setClientDataContext } = useDataContext()
@@ -27,7 +28,7 @@ export default function ClientGrid() {
   async function handleRemoveClient(id: string) {
     const { token } = parseCookies()
 
-    await axios.delete(`http://localhost:3000/api/client/delete?id=${id}`, {
+    await api.delete(`/client/delete?id=${id}`, {
       headers: {
         Authorization: `${token}`,
       },
@@ -40,7 +41,7 @@ export default function ClientGrid() {
       await queryClient.cancelQueries({ queryKey: ['clients'] })
       const previousClients = queryClient.getQueryData(['clients'])
 
-      queryClient.setQueryData<TClient[]>(['clients'], (old) => {
+      queryClient.setQueryData<TClientWithOffice[]>(['clients'], (old) => {
         return old?.filter(({ id }) => id !== clientID)
       })
 
@@ -54,7 +55,7 @@ export default function ClientGrid() {
     },
   })
 
-  function handleOpenModal(data: TClient) {
+  function handleOpenModal(data: TClientWithOffice) {
     openDialog()
     setClientDataContext(data)
   }
@@ -143,7 +144,9 @@ export default function ClientGrid() {
                   </tr>
                 </thead>
                 <tbody>
-                  {clients?.map((item, index) => (
+                  {clients?.map((item, index) => 
+                    { console.log(item.office) 
+                      return (
                     <tr
                       key={index}
                       className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out"
@@ -176,7 +179,7 @@ export default function ClientGrid() {
                         </p>
                       </th>
                       <td className=" p-4 text-left">
-                        {item.office || 'Tem não'}
+                        {item.office?.name ?? 'Tem não'}
                       </td>
                       <td className=" p-4">{item.phone}</td>
                       <td className=" p-4">{item.role}</td>
@@ -194,8 +197,8 @@ export default function ClientGrid() {
                           </Button>
                         </DeleteModal>
                       </td>
-                    </tr>
-                  ))}
+                    </tr>)}
+                  )}
                 </tbody>
               </table>
             </ScrollArea.Viewport>

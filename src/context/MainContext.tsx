@@ -1,4 +1,4 @@
-import { TClient, TOffice } from '@/types'
+import { TClientWithOffice, TOffice } from '@/types'
 import React, { createContext, useState, useContext } from 'react'
 
 interface GlobalContextProps {
@@ -10,8 +10,8 @@ interface GlobalContextProps {
   openModal: () => void
   closeModal: () => void
 
-  setClientDataContext: (data: TClient | undefined) => void
-  clientData: TClient | undefined
+  setClientDataContext: (data: TClientWithOffice | undefined) => void
+  clientData: TClientWithOffice | undefined
 
   setOfficeDataContext: (data: TOffice | undefined) => void
   officeData: TOffice | undefined
@@ -22,7 +22,7 @@ const GlobalContext = createContext<GlobalContextProps | undefined>(undefined)
 function GlobalProvider(props: { children: React.ReactNode }) {
   const [isDialogOpen, setisDialogOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [clientData, setClientData] = useState<TClient>()
+  const [clientData, setClientData] = useState<TClientWithOffice>()
   const [officeData, setOfficeData] = useState<TOffice>()
 
   const openDialog = () => {
@@ -41,7 +41,7 @@ function GlobalProvider(props: { children: React.ReactNode }) {
     setIsModalOpen(false)
   }
 
-  const setClientDataContext = (data: TClient | undefined) => {
+  const setClientDataContext = (data: TClientWithOffice | undefined) => {
     setClientData(data)
   }
 
