@@ -66,9 +66,9 @@ model Gift {
   id          String  @id @default(uuid())
   name        String
   description String?
-  sendDate    Int?
+  sendDate    String
 
-  Office   Office? @relation(fields: [officeId], references: [id])
+  office   Office? @relation(fields: [officeId], references: [id])
   officeId String?
 
   @@index([officeId])

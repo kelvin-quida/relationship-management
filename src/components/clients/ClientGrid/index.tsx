@@ -6,21 +6,103 @@ import { parseCookies } from 'nookies'
 import { useDataContext } from '@/context/MainContext'
 import SliderModal from '@/components/ui/SliderModal'
 import { FormNewClient } from './FormNewClient'
-import { FormUpdateClient } from './FormUpdateClient'
 import Box from '@/components/ui/Box'
 import Input from '@/components/ui/Input'
 import * as ScrollArea from '@radix-ui/react-scroll-area'
 import Button from '@/components/ui/Button'
-import DeleteModal from '@/components/ui/Modal/DeleteModal'
 import { api } from '@/lib/api'
+import {
+  useReactTable,
+  ColumnDef,
+  getCoreRowModel,
+  flexRender,
+  ColumnFiltersState,
+  getFilteredRowModel,
+  Table as TTable,
+  SortingState,
+  getSortedRowModel,
+} from '@tanstack/react-table'
+import { useState } from 'react'
 
-const filterTitles = [
-  { title: 'Sel' },
-  { title: 'Nome' },
-  { title: 'Escritório' },
-  { title: 'Telefone' },
-  { title: 'Role' },
-  { title: 'Ações' },
+type Client = {
+  id: string
+  name: string
+  office: string
+  phone: string
+  role: string
+}
+
+const columns: ColumnDef<Client>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => null,
+    cell: ({ row }) => (
+      <input
+        id="checkbox-table-search-1"
+        type="checkbox"
+        className="h-4 w-4 cursor-pointer rounded border-neutral-700 bg-neutral-800 text-emerald-600 focus:ring-2 focus:ring-emerald-500"
+        checked={row.getIsSelected()}
+        onChange={(event) => row.toggleSelected(event.currentTarget.checked)}
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: 'name',
+    header: ({ column }) => {
+      return (
+        <Button color="neutral" onClick={column.getToggleSortingHandler()}>
+          Nome ({/* getIsSorted retorna false | 'asc' | 'desc' */}
+          {{ asc: 'asc', desc: 'desc' }[column.getIsSorted() as string] ?? null}
+          )
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: 'office',
+    header: 'Escritório',
+  },
+  {
+    accessorKey: 'phone',
+    header: 'Telefone',
+  },
+  {
+    accessorKey: 'role',
+    header: 'Cargo',
+  },
+]
+
+export const data: Client[] = [
+  {
+    id: '1',
+    name: 'Daniel Gabriel',
+    office: 'Vercel',
+    phone: '213123213',
+    role: 'Admin',
+  },
+  {
+    id: '2',
+    name: 'Armitage',
+    office: 'Buffalo Bills',
+    phone: '498908123',
+    role: 'Admin',
+  },
+  {
+    id: '3',
+    name: 'Juca Bala',
+    office: 'Riot Games',
+    phone: '9825908324',
+    role: 'Admin',
+  },
+  {
+    id: '4',
+    name: 'Meluiz',
+    office: 'Supabase',
+    phone: '9128390',
+    role: 'Admin',
+  },
 ]
 
 export default function ClientGrid() {
@@ -68,6 +150,28 @@ export default function ClientGrid() {
     setClientDataContext(data)
   }
 
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [rowSelection, setRowSelection] = useState({})
+
+  console.log(rowSelection)
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onRowSelectionChange: setRowSelection,
+    state: {
+      columnFilters,
+      sorting,
+      rowSelection,
+    },
+  })
+
   return (
     <>
       <SliderModal />
@@ -97,6 +201,12 @@ export default function ClientGrid() {
               id="table-search"
               placeholder="Buscar cliente"
               className="pl-10"
+              value={
+                (table.getColumn('name')?.getFilterValue() as string) ?? ''
+              }
+              onChange={(event) =>
+                table.getColumn('name')?.setFilterValue(event.target.value)
+              }
             />
           </div>
           <FormNewClient />
@@ -104,7 +214,8 @@ export default function ClientGrid() {
         <div className="h-[calc(100%-60px)] w-full overflow-hidden">
           <ScrollArea.Root className="h-full w-full">
             <ScrollArea.Viewport className="h-full w-full scroll-pb-10">
-              <table className="h-full w-full text-sm text-neutral-400">
+              <Table table={table} />
+              {/* <table className="h-full w-full text-sm text-neutral-400">
                 <thead className="text-xs uppercase">
                   <tr>
                     {filterTitles.map((item, index) => (
@@ -178,11 +289,11 @@ export default function ClientGrid() {
                     )
                   })}
                 </tbody>
-              </table>
+              </table> */}
             </ScrollArea.Viewport>
 
             <ScrollArea.Scrollbar
-              className="flex touch-none select-none rounded-full bg-neutral-900 transition-colors duration-[160ms] ease-out hover:bg-neutral-950 data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col"
+              className="duration-[160ms] flex touch-none select-none rounded-full bg-neutral-900 transition-colors ease-out hover:bg-neutral-950 data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col"
               orientation="vertical"
             >
               <ScrollArea.Thumb className="relative flex-1 rounded-full bg-emerald-700 before:absolute before:left-1/2 before:top-1/2 before:h-10 before:min-h-[14px] before:w-full before:min-w-[44px] before:-translate-x-1/2 before:-translate-y-1/2 before:content-['']" />
@@ -192,5 +303,53 @@ export default function ClientGrid() {
         </div>
       </Box>
     </>
+  )
+}
+
+const Table = ({ table }: { table: TTable<Client> }) => {
+  return (
+    <table className="h-full w-full text-sm text-neutral-400">
+      <thead className="text-xs uppercase">
+        {table.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map((header) => {
+              return (
+                <th key={header.id} scope="col" className="p-4">
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                </th>
+              )
+            })}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map((row) => (
+            <tr
+              key={row.id}
+              data-state={row.getIsSelected() && 'selected'}
+              className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out"
+            >
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id} className="p-4">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))
+        ) : (
+          <tr className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out">
+            <td colSpan={columns.length} className="h-24 text-center">
+              No results.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
   )
 }

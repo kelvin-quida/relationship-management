@@ -8,7 +8,14 @@ export type TClientWithOffice = Prisma.ClientGetPayload<{
 
 export type TOfficeWithClient = Prisma.OfficeGetPayload<{
   include: {
+    historyGift: true
     client: true
+  }
+}>
+
+export type TGift = Prisma.GiftGetPayload<{
+  include: {
+    office: true
   }
 }>
 
