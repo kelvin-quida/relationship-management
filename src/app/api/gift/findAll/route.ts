@@ -3,22 +3,22 @@ import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
-  const findAllClients = await prisma.client.findMany({
+  const findAllGifts = await prisma.gift.findMany({
     include: {
       office: true,
     },
   })
 
-  console.log(findAllClients)
+  console.log(findAllGifts)
   const Auth = AuthRoute(req)
 
   if (!Auth) {
     return NextResponse.json('Token Incorreto')
   }
 
-  if (!findAllClients) {
-    return NextResponse.json('Não existe clientes cadastrados')
+  if (!findAllGifts) {
+    return NextResponse.json('Não existe brindes cadastrados')
   }
 
-  return NextResponse.json(findAllClients)
+  return NextResponse.json(findAllGifts)
 }
