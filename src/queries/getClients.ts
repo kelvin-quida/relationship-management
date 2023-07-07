@@ -3,7 +3,6 @@ import { cookies } from 'next/headers'
 import axios from 'axios'
 import { TClientWithOffice } from '@/types'
 
-
 export async function getClients() {
   const token = cookies().get('token')
 
