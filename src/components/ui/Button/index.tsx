@@ -1,10 +1,10 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react'
+import { ButtonHTMLAttributes, ReactNode, forwardRef } from 'react'
 import { tv } from 'tailwind-variants'
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string
   children: ReactNode
-  color: 'primary' | 'warn' | 'neutral'
+  color?: 'primary' | 'warn' | 'neutral'
 }
 
 const button = tv({
@@ -23,10 +23,11 @@ const button = tv({
   },
 })
 
-export default function Button({ className, children, color, ...rest }: Props) {
+const Button = forwardRef<HTMLButtonElement,Props>(({ className, children, color, ...rest },ref) => {
   return (
     <button
       {...rest}
+      ref={ref}
       className={button({
         color,
         className,
@@ -35,4 +36,8 @@ export default function Button({ className, children, color, ...rest }: Props) {
       {children}
     </button>
   )
-}
+})
+
+Button.displayName = "Button"
+
+export default Button

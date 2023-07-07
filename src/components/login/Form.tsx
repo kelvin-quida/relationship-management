@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { setCookie } from 'nookies'
 import axios from 'axios'
+import { api } from '@/lib/api'
 
 const FormSchema = z.object({
   email: z.string(),
@@ -20,7 +21,7 @@ export default function FormLogin() {
   const router = useRouter()
 
   async function FormSubmit(data: LoginFormData) {
-    const loginUser = await axios.post('http://localhost:3000/api/login', {
+    const loginUser = await api.post('/login', {
       email: data.email,
       password: data.password,
     })

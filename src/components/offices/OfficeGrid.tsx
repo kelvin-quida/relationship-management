@@ -13,6 +13,7 @@ import Input from '../ui/Input'
 import * as ScrollArea from '@radix-ui/react-scroll-area'
 import DeleteModal from '../ui/Modal/DeleteModal'
 import Button from '../ui/Button'
+import Link from 'next/link'
 
 const filterTitles = [
   { title: 'Sel' },
@@ -70,8 +71,7 @@ export default function OfficeGrid() {
 
   return (
     <>
-      <SliderModal />
-      <Box className="relative h-full overflow-hidden">
+      <Box className="relative w-full h-full overflow-hidden">
         <div className="z-50 flex w-full items-center justify-between bg-neutral-900 pb-6 pt-0 duration-150 ease-out">
           {/* Dropdown Insert */}
           <div className="relative">
@@ -138,11 +138,12 @@ export default function OfficeGrid() {
                           </label>
                         </div>
                       </td>
+                      <Link href={`/offices/${data.id}`}>
                       <th
                         scope="row"
-                        onClick={() => handleOpenModal(data)}
                         className="flex flex-col items-start justify-center gap-1 whitespace-nowrap  rounded-lg border border-transparent p-4 font-medium text-neutral-500 duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800"
                       >
+                        
                         <h4 className="text-sm font-bold text-neutral-100">
                           {data.name}
                         </h4>
@@ -150,6 +151,7 @@ export default function OfficeGrid() {
                           {data.email}
                         </p>
                       </th>
+                        </Link>
                       <td className="p-4">{data.location}</td>
                       <td className="p-4">{data.phone}</td>
                       <td className="p-4">{data.description}</td>

@@ -10,10 +10,11 @@ export default async function Client() {
   const dehydratedState = dehydrate(queryClient)
 
   return (
-    <main className="mx-auto w-full max-w-7xl p-6">
+    <main className="mx-auto h-screen w-full p-6">
       <Hydrate state={dehydratedState}>
-        <OfficeGrid />
-        <SliderModal />
+        <div className="flex h-full w-full items-start justify-center gap-4 overflow-hidden">
+          <OfficeGrid />
+        </div>
       </Hydrate>
     </main>
   )
