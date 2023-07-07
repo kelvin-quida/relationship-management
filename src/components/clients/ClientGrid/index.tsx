@@ -21,33 +21,21 @@ import {
   Table as TTable,
   SortingState,
   getSortedRowModel,
+  getPaginationRowModel,
 } from '@tanstack/react-table'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import DeleteModal from '@/components/ui/Modal/DeleteModal'
+import { FormUpdateClient } from './FormUpdateClient'
 
 type Client = {
   id: string
   name: string
-  office: string
-  phone: string
-  role: string
+  office: string | undefined
+  phone: string | null
+  role: string | null
 }
 
 const columns: ColumnDef<Client>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => null,
-    cell: ({ row }) => (
-      <input
-        id="checkbox-table-search-1"
-        type="checkbox"
-        className="h-4 w-4 cursor-pointer rounded border-neutral-700 bg-neutral-800 text-emerald-600 focus:ring-2 focus:ring-emerald-500"
-        checked={row.getIsSelected()}
-        onChange={(event) => row.toggleSelected(event.currentTarget.checked)}
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: 'name',
     header: ({ column }) => {
@@ -62,7 +50,15 @@ const columns: ColumnDef<Client>[] = [
   },
   {
     accessorKey: 'office',
-    header: 'Escritório',
+    header: ({ column }) => {
+      return (
+        <Button color="neutral" onClick={column.getToggleSortingHandler()}>
+          Escritório ({/* getIsSorted retorna false | 'asc' | 'desc' */}
+          {{ asc: 'asc', desc: 'desc' }[column.getIsSorted() as string] ?? null}
+          )
+        </Button>
+      )
+    },
   },
   {
     accessorKey: 'phone',
@@ -70,7 +66,19 @@ const columns: ColumnDef<Client>[] = [
   },
   {
     accessorKey: 'role',
-    header: 'Cargo',
+    header: ({ column }) => {
+      return (
+        <Button color="neutral" onClick={column.getToggleSortingHandler()}>
+          Cargo ({/* getIsSorted retorna false | 'asc' | 'desc' */}
+          {{ asc: 'asc', desc: 'desc' }[column.getIsSorted() as string] ?? null}
+          )
+        </Button>
+      )
+    },
+  },
+  {
+    id: 'actions',
+    cell: () => null,
   },
 ]
 
@@ -106,8 +114,6 @@ export const data: Client[] = [
 ]
 
 export default function ClientGrid() {
-  const { openDialog, setClientDataContext } = useDataContext()
-
   const queryClient = useQueryClient()
 
   const { data: clients } = useQuery({
@@ -145,30 +151,31 @@ export default function ClientGrid() {
     },
   })
 
-  function handleOpenModal(data: TClientWithOffice) {
-    openDialog()
-    setClientDataContext(data)
-  }
-
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
-  const [rowSelection, setRowSelection] = useState({})
 
-  console.log(rowSelection)
+  const clientsTableData = useMemo(() => {
+    return (clients ?? []).map((client) => ({
+      id: client.id,
+      name: client.name,
+      office: client.office?.name,
+      phone: client.phone,
+      role: client.role,
+    }))
+  }, [clients])
 
   const table = useReactTable({
-    data,
+    data: clientsTableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: setRowSelection,
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       columnFilters,
       sorting,
-      rowSelection,
     },
   })
 
@@ -214,82 +221,13 @@ export default function ClientGrid() {
         <div className="h-[calc(100%-60px)] w-full overflow-hidden">
           <ScrollArea.Root className="h-full w-full">
             <ScrollArea.Viewport className="h-full w-full scroll-pb-10">
-              <Table table={table} />
-              {/* <table className="h-full w-full text-sm text-neutral-400">
-                <thead className="text-xs uppercase">
-                  <tr>
-                    {filterTitles.map((item, index) => (
-                      <>
-                        <th key={index} scope="col" className="p-4">
-                          <div className="flex w-full items-center justify-start">
-                            <p className="text-center text-zinc-500">
-                              {item.title}
-                            </p>
-                          </div>
-                        </th>
-                      </>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {clients?.map((item, index) => {
-                    console.log(item.office)
-                    return (
-                      <tr
-                        key={index}
-                        className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out"
-                      >
-                        <td className="w-4 p-4">
-                          <div className="flex items-center">
-                            <input
-                              id="checkbox-table-search-1"
-                              type="checkbox"
-                              className="h-4 w-4 cursor-pointer rounded border-neutral-700 bg-neutral-800 text-emerald-600 focus:ring-2 focus:ring-emerald-500"
-                            />
-                            <label
-                              htmlFor="checkbox-table-search-1"
-                              className="sr-only"
-                            >
-                              checkbox
-                            </label>
-                          </div>
-                        </td>
-                        <th
-                          scope="row"
-                          onClick={() => handleOpenModal(item)}
-                          className="flex flex-col items-start justify-center gap-1 whitespace-nowrap  rounded-lg border border-transparent p-4 font-medium text-neutral-500 duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800"
-                        >
-                          <h4 className="text-sm font-bold text-neutral-100">
-                            {item.name}
-                          </h4>
-                          <p className=" text-sm font-normal text-neutral-500">
-                            {item.email}
-                          </p>
-                        </th>
-                        <td className=" p-4 text-left">
-                          {item.office?.name ?? 'Tem não'}
-                        </td>
-                        <td className=" p-4">{item.phone}</td>
-                        <td className=" p-4">{item.role}</td>
-                        <td className="flex items-center justify-end gap-2 p-4">
-                          <FormUpdateClient data={item} />
-                          <DeleteModal
-                            title="Remover cliente"
-                            description="Tem certeza que deseja remover o cliente?"
-                          >
-                            <Button
-                              onClick={() => mutation.mutate(item.id)}
-                              color="warn"
-                            >
-                              Remover
-                            </Button>
-                          </DeleteModal>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table> */}
+              <Table
+                table={table}
+                clients={clients}
+                onDelete={(index) =>
+                  mutation.mutate(clientsTableData[index].id)
+                }
+              />
             </ScrollArea.Viewport>
 
             <ScrollArea.Scrollbar
@@ -306,50 +244,116 @@ export default function ClientGrid() {
   )
 }
 
-const Table = ({ table }: { table: TTable<Client> }) => {
+type TableProps = {
+  table: TTable<Client>
+  clients?: TClientWithOffice[]
+  onDelete: (index: number) => void
+}
+const Table = ({ table, clients, onDelete }: TableProps) => {
+  const { openDialog, setClientDataContext } = useDataContext()
+
+  function handleOpenModal(data: TClientWithOffice) {
+    openDialog()
+    setClientDataContext(data)
+  }
+
   return (
-    <table className="h-full w-full text-sm text-neutral-400">
-      <thead className="text-xs uppercase">
-        {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => {
-              return (
-                <th key={header.id} scope="col" className="p-4">
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </th>
-              )
-            })}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => (
-            <tr
-              key={row.id}
-              data-state={row.getIsSelected() && 'selected'}
-              className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out"
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-4">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
+    <>
+      <table className="h-full w-full text-sm text-neutral-400">
+        <thead className="text-xs uppercase">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <th key={header.id} scope="col" className="p-4">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </th>
+                )
+              })}
             </tr>
-          ))
-        ) : (
-          <tr className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out">
-            <td colSpan={columns.length} className="h-24 text-center">
-              No results.
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+                className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out"
+              >
+                {row.getVisibleCells().map((cell) => {
+                  if (cell.id.includes('actions')) {
+                    return (
+                      <td key={cell.id}>
+                        <DeleteModal
+                          title="Remover cliente"
+                          description="Tem certeza que deseja remover o cliente?"
+                        >
+                          <Button
+                            onClick={() => onDelete(cell.row.index)}
+                            color="warn"
+                          >
+                            Deletar
+                          </Button>
+                        </DeleteModal>
+                        {clients?.[cell.row.index] && (
+                          <FormUpdateClient data={clients[cell.row.index]} />
+                        )}
+                      </td>
+                    )
+                  }
+                  return (
+                    <td
+                      key={cell.id}
+                      className="p-4"
+                      onClick={() => {
+                        if (
+                          cell.id.includes('name') &&
+                          clients?.[cell.row.index]
+                        ) {
+                          handleOpenModal(clients[cell.row.index])
+                        }
+                      }}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </td>
+                  )
+                })}
+              </tr>
+            ))
+          ) : (
+            <tr className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out">
+              <td colSpan={columns.length} className="h-24 text-center">
+                Nenhum resultado.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+          color="primary"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          color="primary"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+      </div>
+    </>
   )
 }
