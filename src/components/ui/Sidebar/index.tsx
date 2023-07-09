@@ -1,3 +1,4 @@
+'use client'
 import {
   ArrowLeftOnRectangleIcon,
   BuildingOfficeIcon,
@@ -6,9 +7,10 @@ import {
   RectangleStackIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/solid'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import NavLink from '../NavLink'
 import { ReactNode } from 'react'
+import { destroyCookie, parseCookies } from 'nookies'
 
 type TNavMenu = {
   name: string
@@ -41,6 +43,17 @@ const navigation = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+
+  function handleLogout() {
+    const { token } = parseCookies()
+    const noCookies = destroyCookie({}, token)
+    
+    if (noCookies) {
+      return router.push('/')
+    }
+
+  }
 
   return (
     <>
@@ -59,7 +72,7 @@ export default function Sidebar() {
             {icon}
           </NavLink>
         ))}
-        <div className="flex h-full flex-col items-center justify-end">
+        <div onClick={handleLogout} className="flex h-full flex-col items-center justify-end">
           <NavLink title="Sair" color="warn" size="sm" href="#">
             <ArrowLeftOnRectangleIcon className="h-6 w-6" />
           </NavLink>
