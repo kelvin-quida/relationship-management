@@ -4,7 +4,7 @@ import { tv } from 'tailwind-variants'
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string
   children: ReactNode
-  color?: 'primary' | 'warn' | 'neutral'
+  color?: 'primary' | 'warn' | 'neutral' | 'none'
 }
 
 const button = tv({
@@ -16,6 +16,7 @@ const button = tv({
       warn: 'border border-rose-500 bg-rose-950/50 text-sm text-rose-400 hover:bg-rose-500 hover:text-white',
       neutral:
         'border border-neutral-800 bg-neutral-900 text-sm text-neutral-400 hover:bg-neutral-800 hover:text-white',
+      none: 'text-sm text-neutral-400 hover:text-white',
     },
   },
   defaultVariants: {
@@ -23,21 +24,23 @@ const button = tv({
   },
 })
 
-const Button = forwardRef<HTMLButtonElement,Props>(({ className, children, color, ...rest },ref) => {
-  return (
-    <button
-      {...rest}
-      ref={ref}
-      className={button({
-        color,
-        className,
-      })}
-    >
-      {children}
-    </button>
-  )
-})
+const Button = forwardRef<HTMLButtonElement, Props>(
+  ({ className, children, color, ...rest }, ref) => {
+    return (
+      <button
+        {...rest}
+        ref={ref}
+        className={button({
+          color,
+          className,
+        })}
+      >
+        {children}
+      </button>
+    )
+  },
+)
 
-Button.displayName = "Button"
+Button.displayName = 'Button'
 
 export default Button

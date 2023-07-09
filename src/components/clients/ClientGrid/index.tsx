@@ -26,6 +26,13 @@ import {
 import { useMemo, useState } from 'react'
 import DeleteModal from '@/components/ui/Modal/DeleteModal'
 import { FormUpdateClient } from './FormUpdateClient'
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+} from '@heroicons/react/24/solid'
+import { cn } from '@/lib/utils'
 
 type Client = {
   id: string
@@ -40,10 +47,16 @@ const columns: ColumnDef<Client>[] = [
     accessorKey: 'name',
     header: ({ column }) => {
       return (
-        <Button color="neutral" onClick={column.getToggleSortingHandler()}>
-          Nome ({/* getIsSorted retorna false | 'asc' | 'desc' */}
-          {{ asc: 'asc', desc: 'desc' }[column.getIsSorted() as string] ?? null}
-          )
+        <Button
+          color="none"
+          className="flex items-center justify-center gap-2 p-0"
+          onClick={column.getToggleSortingHandler()}
+        >
+          Nome {/* getIsSorted retorna false | 'asc' | 'desc' */}
+          {{
+            asc: <ChevronDownIcon className="h-4 w-4" />,
+            desc: <ChevronUpIcon className="h-4 w-4" />,
+          }[column.getIsSorted() as string] ?? null}
         </Button>
       )
     },
@@ -52,10 +65,16 @@ const columns: ColumnDef<Client>[] = [
     accessorKey: 'office',
     header: ({ column }) => {
       return (
-        <Button color="neutral" onClick={column.getToggleSortingHandler()}>
-          Escritório ({/* getIsSorted retorna false | 'asc' | 'desc' */}
-          {{ asc: 'asc', desc: 'desc' }[column.getIsSorted() as string] ?? null}
-          )
+        <Button
+          color="none"
+          className="flex items-center justify-center gap-2 p-0"
+          onClick={column.getToggleSortingHandler()}
+        >
+          Escritório {/* getIsSorted retorna false | 'asc' | 'desc' */}
+          {{
+            asc: <ChevronDownIcon className="h-4 w-4" />,
+            desc: <ChevronUpIcon className="h-4 w-4" />,
+          }[column.getIsSorted() as string] ?? null}
         </Button>
       )
     },
@@ -68,10 +87,16 @@ const columns: ColumnDef<Client>[] = [
     accessorKey: 'role',
     header: ({ column }) => {
       return (
-        <Button color="neutral" onClick={column.getToggleSortingHandler()}>
-          Cargo ({/* getIsSorted retorna false | 'asc' | 'desc' */}
-          {{ asc: 'asc', desc: 'desc' }[column.getIsSorted() as string] ?? null}
-          )
+        <Button
+          color="none"
+          className="flex items-center justify-center gap-2 p-0"
+          onClick={column.getToggleSortingHandler()}
+        >
+          Cargo {/* getIsSorted retorna false | 'asc' | 'desc' */}
+          {{
+            asc: <ChevronDownIcon className="h-4 w-4" />,
+            desc: <ChevronUpIcon className="h-4 w-4" />,
+          }[column.getIsSorted() as string] ?? null}
         </Button>
       )
     },
@@ -80,37 +105,6 @@ const columns: ColumnDef<Client>[] = [
     id: 'actions',
     header: 'Ações',
     cell: () => null,
-  },
-]
-
-export const data: Client[] = [
-  {
-    id: '1',
-    name: 'Daniel Gabriel',
-    office: 'Vercel',
-    phone: '213123213',
-    role: 'Admin',
-  },
-  {
-    id: '2',
-    name: 'Armitage',
-    office: 'Buffalo Bills',
-    phone: '498908123',
-    role: 'Admin',
-  },
-  {
-    id: '3',
-    name: 'Juca Bala',
-    office: 'Riot Games',
-    phone: '9825908324',
-    role: 'Admin',
-  },
-  {
-    id: '4',
-    name: 'Meluiz',
-    office: 'Supabase',
-    phone: '9128390',
-    role: 'Admin',
   },
 ]
 
@@ -217,11 +211,31 @@ export default function ClientGrid() {
               }
             />
           </div>
-          <FormNewClient />
+          <div className="flex items-center justify-end gap-4">
+            <FormNewClient />
+            <div className="flex items-center justify-end space-x-2 py-4">
+              <Button
+                color="neutral"
+                className="flex h-10 w-10 items-center justify-center p-1.5 text-neutral-500 duration-150 ease-out hover:text-neutral-300"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronLeftIcon />
+              </Button>
+              <Button
+                color="neutral"
+                className="flex h-10 w-10 items-center justify-center p-1.5 text-neutral-500 duration-150 ease-out hover:text-neutral-300"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <ChevronRightIcon />
+              </Button>
+            </div>
+          </div>
         </div>
         <div className="h-[calc(100%-60px)] w-full overflow-hidden">
           <ScrollArea.Root className="h-full w-full">
-            <ScrollArea.Viewport className="h-full w-full scroll-pb-10">
+            <ScrollArea.Viewport className="h-full w-full pb-10">
               <Table
                 table={table}
                 clients={clients}
@@ -261,12 +275,19 @@ const Table = ({ table, clients, onDelete }: TableProps) => {
   return (
     <>
       <table className="h-full w-full text-sm text-neutral-400">
-        <thead className="text-xs uppercase">
+        <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <th key={header.id} scope="col" className="p-4">
+                  <th
+                    key={header.id}
+                    scope="col"
+                    className={cn({
+                      'text-left': true,
+                      'text-left px-4': header.id.includes('name'),
+                    })}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -290,7 +311,10 @@ const Table = ({ table, clients, onDelete }: TableProps) => {
                 {row.getVisibleCells().map((cell) => {
                   if (cell.id.includes('actions')) {
                     return (
-                      <td key={cell.id}>
+                      <td key={cell.id} className="flex gap-2">
+                        {clients?.[cell.row.index] && (
+                          <FormUpdateClient data={clients[cell.row.index]} />
+                        )}
                         <DeleteModal
                           title="Remover cliente"
                           description="Tem certeza que deseja remover o cliente?"
@@ -302,16 +326,16 @@ const Table = ({ table, clients, onDelete }: TableProps) => {
                             Deletar
                           </Button>
                         </DeleteModal>
-                        {clients?.[cell.row.index] && (
-                          <FormUpdateClient data={clients[cell.row.index]} />
-                        )}
                       </td>
                     )
                   }
                   return (
                     <td
                       key={cell.id}
-                      className="p-4"
+                      className={cn({
+                        'p-4 rounded-lg flex flex-col gap-1 my-2 mr-10 items-start justify-center border border-transparent duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800 cursor-pointer text-white font-semibold text-base':
+                          cell.id.includes('name'),
+                      })}
                       onClick={() => {
                         if (
                           cell.id.includes('name') &&
@@ -325,6 +349,11 @@ const Table = ({ table, clients, onDelete }: TableProps) => {
                         cell.column.columnDef.cell,
                         cell.getContext(),
                       )}
+                      {cell.id.includes('name') && clients?.[cell.row.index] ? (
+                        <p className="text-sm font-normal text-neutral-400">
+                          {clients?.[cell.row.index].email}
+                        </p>
+                      ) : null}
                     </td>
                   )
                 })}
@@ -339,22 +368,6 @@ const Table = ({ table, clients, onDelete }: TableProps) => {
           )}
         </tbody>
       </table>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          color="primary"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          color="primary"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div>
     </>
   )
 }
