@@ -12,13 +12,13 @@ export async function POST(req: NextRequest) {
   })
 
   if (!findUser) {
-    return NextResponse.json('Nao exite usuario')
+    return false
   }
 
   const comparePassword = findUser.password === password
 
   if (!comparePassword) {
-    return NextResponse.error()
+    return false
   }
 
   return NextResponse.json('Foi maneiro')

@@ -7,14 +7,18 @@ import { setCookie } from 'nookies'
 import { api } from '@/lib/api'
 
 const FormSchema = z.object({
-  email: z.string().email({message:'Email invalido!'}),
-  password: z.string().min(3,{ message: 'Deve ter pelo menos 5 caracteres!' }),
+  email: z.string().email({ message: 'Email invalido!' }),
+  password: z.string().min(3, { message: 'Deve ter pelo menos 5 caracteres!' }),
 })
 
 type LoginFormData = z.infer<typeof FormSchema>
 
 export default function FormLogin() {
-  const { register, handleSubmit, formState:{errors} } = useForm<LoginFormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
     resolver: zodResolver(FormSchema),
   })
   const router = useRouter()
@@ -66,7 +70,9 @@ export default function FormLogin() {
                   }`}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -100,7 +106,9 @@ export default function FormLogin() {
                   }`}
                 />
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
             </div>
