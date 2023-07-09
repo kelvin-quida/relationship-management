@@ -104,6 +104,12 @@ export function FormNewClient() {
             placeholder="Endereço"
             {...register('address')}
           />
+          <Input
+            color="primary"
+            type="text"
+            placeholder="Cargo"
+            {...register('role')}
+          />
           <Controller
             control={control}
             name="officeId"
