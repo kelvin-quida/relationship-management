@@ -1,33 +1,116 @@
 'use client'
-import { getOffices } from '@/queries/getOffices'
-import { TOfficeWithClient } from '@/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { parseCookies } from 'nookies'
 import { useDataContext } from '@/context/MainContext'
-import { FormNewOffice } from './FormNewOffice'
-import SliderModal from '../ui/SliderModal'
-import { FormUpdateOffice } from './FormUpdateOffice'
-import { api } from '@/lib/api'
-import Box from '../ui/Box'
-import Input from '../ui/Input'
+import SliderModal from '@/components/ui/SliderModal'
+import Box from '@/components/ui/Box'
+import Input from '@/components/ui/Input'
 import * as ScrollArea from '@radix-ui/react-scroll-area'
-import DeleteModal from '../ui/Modal/DeleteModal'
-import Button from '../ui/Button'
+import Button from '@/components/ui/Button'
+import { api } from '@/lib/api'
+import {
+  useReactTable,
+  ColumnDef,
+  getCoreRowModel,
+  flexRender,
+  ColumnFiltersState,
+  getFilteredRowModel,
+  Table as TTable,
+  SortingState,
+  getSortedRowModel,
+  getPaginationRowModel,
+} from '@tanstack/react-table'
+import { useMemo, useState } from 'react'
+import DeleteModal from '@/components/ui/Modal/DeleteModal'
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+} from '@heroicons/react/24/solid'
+import { cn } from '@/lib/utils'
+import { getOffices } from '@/queries/getOffices'
+import { TOfficeWithClient } from '@/types'
+import { FormNewOffice } from './FormNewOffice'
+import { FormUpdateOffice } from './FormUpdateOffice'
 import Link from 'next/link'
 
-const filterTitles = [
-  { title: 'Sel' },
-  { title: 'Nome' },
-  { title: 'Escritório' },
-  { title: 'Telefone' },
-  { title: 'Role' },
-  { title: 'Ações' },
+type Office = {
+  id: string
+  name: string
+  phone: string | null
+  location: string | undefined
+  website: string | null
+}
+
+const columns: ColumnDef<Office>[] = [
+  {
+    accessorKey: 'name',
+    header: ({ column }) => {
+      return (
+        <Button
+          color="none"
+          className="flex items-center justify-center gap-2 p-0"
+          onClick={column.getToggleSortingHandler()}
+        >
+          Nome {/* getIsSorted retorna false | 'asc' | 'desc' */}
+          {{
+            asc: <ChevronDownIcon className="h-4 w-4" />,
+            desc: <ChevronUpIcon className="h-4 w-4" />,
+          }[column.getIsSorted() as string] ?? null}
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: 'phone',
+    header: ({ column }) => {
+      return (
+        <Button
+          color="none"
+          className="flex items-center justify-center gap-2 p-0"
+          onClick={column.getToggleSortingHandler()}
+        >
+          Telefone {/* getIsSorted retorna false | 'asc' | 'desc' */}
+          {{
+            asc: <ChevronDownIcon className="h-4 w-4" />,
+            desc: <ChevronUpIcon className="h-4 w-4" />,
+          }[column.getIsSorted() as string] ?? null}
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: 'website',
+    header: 'Website',
+  },
+  {
+    accessorKey: 'location',
+    header: ({ column }) => {
+      return (
+        <Button
+          color="none"
+          className="flex items-center justify-center gap-2 p-0"
+          onClick={column.getToggleSortingHandler()}
+        >
+          Localização {/* getIsSorted retorna false | 'asc' | 'desc' */}
+          {{
+            asc: <ChevronDownIcon className="h-4 w-4" />,
+            desc: <ChevronUpIcon className="h-4 w-4" />,
+          }[column.getIsSorted() as string] ?? null}
+        </Button>
+      )
+    },
+  },
+  {
+    id: 'actions',
+    header: 'Ações',
+    cell: () => null,
+  },
 ]
 
 export default function OfficeGrid() {
-  const { openDialog, setOfficeDataContext } = useDataContext()
-
-  const queryClient = useQueryClient()
+  const queryOffice = useQueryClient()
 
   const { data: offices } = useQuery({
     queryKey: ['offices'],
@@ -46,32 +129,57 @@ export default function OfficeGrid() {
 
   const mutation = useMutation({
     mutationFn: handleRemoveOffice,
-    onMutate: async (clientID) => {
-      await queryClient.cancelQueries({ queryKey: ['offices'] })
-      const previousClients = queryClient.getQueryData(['offices'])
+    onMutate: async (officeID) => {
+      await queryOffice.cancelQueries({ queryKey: ['offices'] })
+      const previousoffices = queryOffice.getQueryData(['offices'])
 
-      queryClient.setQueryData<TOfficeWithClient[]>(['offices'], (old) => {
-        return old?.filter(({ id }) => id !== clientID)
+      queryOffice.setQueryData<TOfficeWithClient[]>(['offices'], (old) => {
+        return old?.filter(({ id }) => id !== officeID)
       })
 
-      return { previousClients }
+      return { previousoffices }
     },
-    onError: (_err, _deleteClients, context) => {
-      queryClient.setQueryData(['clients'], context?.previousClients)
+    onError: (_err, _deleteoffices, context) => {
+      queryOffice.setQueryData(['offices'], context?.previousoffices)
     },
     onSettled: () => {
-      queryClient.invalidateQueries(['clients'])
+      queryOffice.invalidateQueries(['offices'])
     },
   })
 
-  function handleOpenModal(data: TOfficeWithClient) {
-    openDialog()
-    setOfficeDataContext(data)
-  }
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<SortingState>([])
+
+  const officesTableData = useMemo(() => {
+    return (offices ?? []).map((office) => ({
+      id: office.id,
+      name: office.name,
+      phone: office.phone,
+      website: office.website,
+      location: office.location,
+    }))
+  }, [offices])
+
+  const table = useReactTable({
+    data: officesTableData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      columnFilters,
+      sorting,
+    },
+  })
 
   return (
     <>
-      <Box className="relative w-full h-full overflow-hidden">
+      <SliderModal />
+
+      <Box className="relative h-full overflow-hidden">
         <div className="z-50 flex w-full items-center justify-between bg-neutral-900 pb-6 pt-0 duration-150 ease-out">
           {/* Dropdown Insert */}
           <div className="relative">
@@ -94,89 +202,52 @@ export default function OfficeGrid() {
               color="primary"
               type="text"
               id="table-search"
-              placeholder="Buscar cliente"
+              placeholder="Buscar officee"
               className="pl-10"
+              value={
+                (table.getColumn('name')?.getFilterValue() as string) ?? ''
+              }
+              onChange={(event) =>
+                table.getColumn('name')?.setFilterValue(event.target.value)
+              }
             />
           </div>
-          <FormNewOffice />
+          <div className="flex items-center justify-end gap-4">
+            <FormNewOffice />
+            <div className="flex items-center justify-end space-x-2 py-4">
+              <Button
+                color="neutral"
+                className="flex h-10 w-10 items-center justify-center p-1.5 text-neutral-500 duration-150 ease-out hover:text-neutral-300"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronLeftIcon />
+              </Button>
+              <Button
+                color="neutral"
+                className="flex h-10 w-10 items-center justify-center p-1.5 text-neutral-500 duration-150 ease-out hover:text-neutral-300"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <ChevronRightIcon />
+              </Button>
+            </div>
+          </div>
         </div>
         <div className="h-[calc(100%-60px)] w-full overflow-hidden">
           <ScrollArea.Root className="h-full w-full">
-            <ScrollArea.Viewport className="h-full w-full scroll-pb-10">
-              <table className="h-full w-full text-sm text-neutral-400">
-                <thead className="text-xs uppercase">
-                  <tr>
-                    {filterTitles.map((item, index) => (
-                      <th key={index} scope="col" className="p-4">
-                        <div className="flex w-full items-center justify-start">
-                          <p className="text-center text-zinc-500">
-                            {item.title}
-                          </p>
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {offices?.map((data, index) => (
-                    <tr
-                      key={index}
-                      className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out"
-                    >
-                      <td className="w-4 p-4">
-                        <div className="flex items-center">
-                          <input
-                            id="checkbox-table-search-1"
-                            type="checkbox"
-                            className="h-4 w-4 cursor-pointer rounded border-neutral-700 bg-neutral-800 text-emerald-600 focus:ring-2 focus:ring-emerald-500"
-                          />
-                          <label
-                            htmlFor="checkbox-table-search-1"
-                            className="sr-only"
-                          >
-                            checkbox
-                          </label>
-                        </div>
-                      </td>
-                      <Link href={`/offices/${data.id}`}>
-                      <th
-                        scope="row"
-                        className="flex flex-col items-start justify-center gap-1 whitespace-nowrap  rounded-lg border border-transparent p-4 font-medium text-neutral-500 duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800"
-                      >
-                        
-                        <h4 className="text-sm font-bold text-neutral-100">
-                          {data.name}
-                        </h4>
-                        <p className="text-sm font-normal text-neutral-500">
-                          {data.email}
-                        </p>
-                      </th>
-                        </Link>
-                      <td className="p-4">{data.location}</td>
-                      <td className="p-4">{data.phone}</td>
-                      <td className="p-4">{data.description}</td>
-
-                      <td className="flex items-center justify-end gap-2 p-4">
-                        <FormUpdateOffice data={data} />
-                        <DeleteModal
-                          title="Remover Escritório"
-                          description="Tem certeza que deseja remover o escritório?"
-                        >
-                          <Button
-                            onClick={() => mutation.mutate(data.id)}
-                            color="warn"
-                          >
-                            Remover
-                          </Button>
-                        </DeleteModal>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <ScrollArea.Viewport className="h-full w-full pb-10">
+              <Table
+                table={table}
+                offices={offices}
+                onDelete={(index) =>
+                  mutation.mutate(officesTableData[index].id)
+                }
+              />
             </ScrollArea.Viewport>
+
             <ScrollArea.Scrollbar
-              className="flex touch-none select-none rounded-full bg-neutral-900 transition-colors duration-[160ms] ease-out hover:bg-neutral-950 data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col"
+              className="duration-[160ms] flex touch-none select-none rounded-full bg-neutral-900 transition-colors ease-out hover:bg-neutral-950 data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col"
               orientation="vertical"
             >
               <ScrollArea.Thumb className="relative flex-1 rounded-full bg-emerald-700 before:absolute before:left-1/2 before:top-1/2 before:h-10 before:min-h-[14px] before:w-full before:min-w-[44px] before:-translate-x-1/2 before:-translate-y-1/2 before:content-['']" />
@@ -185,6 +256,113 @@ export default function OfficeGrid() {
           </ScrollArea.Root>
         </div>
       </Box>
+    </>
+  )
+}
+
+type TableProps = {
+  table: TTable<Office>
+  offices?: TOfficeWithClient[]
+  onDelete: (index: number) => void
+}
+const Table = ({ table, offices, onDelete }: TableProps) => {
+  return (
+    <>
+      <table className="h-full w-full text-sm text-neutral-400">
+        <thead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <th
+                    key={header.id}
+                    scope="col"
+                    className={cn({
+                      'text-left': true,
+                      'text-left px-4': header.id.includes('name'),
+                    })}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </th>
+                )
+              })}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+                className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out"
+              >
+                {row.getVisibleCells().map((cell) => {
+                  if (cell.id.includes('actions')) {
+                    return (
+                      <td key={cell.id} className="flex gap-2">
+                        {offices?.[cell.row.index] && (
+                          <FormUpdateOffice data={offices[cell.row.index]} />
+                        )}
+                        <DeleteModal
+                          title="Remover officee"
+                          description="Tem certeza que deseja remover o officee?"
+                        >
+                          <Button
+                            onClick={() => onDelete(cell.row.index)}
+                            color="warn"
+                          >
+                            Deletar
+                          </Button>
+                        </DeleteModal>
+                      </td>
+                    )
+                  }
+                  return (
+                    <td
+                      key={cell.id}
+                      className={cn({
+                        'p-4 rounded-lg flex flex-col gap-1 my-2 mr-10 items-start justify-center border border-transparent duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800 cursor-pointer text-white font-semibold text-base':
+                          cell.id.includes('name'),
+                      })}
+                    >
+                      <Link
+                        href={
+                          cell.id.includes('name')
+                            ? `/offices/${offices?.[cell.row.index].id}`
+                            : '#'
+                        }
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                        {cell.id.includes('name') &&
+                        offices?.[cell.row.index] ? (
+                          <p className="text-sm font-normal text-neutral-400">
+                            {offices?.[cell.row.index].email}
+                          </p>
+                        ) : null}
+                      </Link>
+                    </td>
+                  )
+                })}
+              </tr>
+            ))
+          ) : (
+            <tr className="cursor-pointer select-none rounded-lg border border-transparent duration-150 ease-out">
+              <td colSpan={columns.length} className="h-24 text-center">
+                Nenhum resultado.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </>
   )
 }

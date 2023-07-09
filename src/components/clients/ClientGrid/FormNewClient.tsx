@@ -14,7 +14,17 @@ import { Combobox } from '@/components/ui/Combobox'
 const AddClientSchema = z.object({
   name: z.string().optional(),
   email: z.string().optional(),
-  phone: z.string().optional(),
+  phone: z
+    .string()
+    .transform(
+      (value) =>
+        '(' +
+        value.slice(0, 2) +
+        ') ' +
+        value.slice(2, 7) +
+        '-' +
+        value.slice(7, 11),
+    ),
   address: z.string().optional(),
   role: z.string().optional(),
   office: z.string().optional(),

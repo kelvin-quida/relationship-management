@@ -10,22 +10,29 @@ type Props = {
 export default function BrowserOffice({ id }: Props) {
   const { data: offices } = useQuery({
     queryKey: ['offices', id],
-    queryFn: ({ queryKey }) => getOffice(queryKey[1])
+    queryFn: ({ queryKey }) => getOffice(queryKey[1]),
   })
-
-  console.log(offices)
 
   return (
     <>
-      <Box className="relative w-full p-10 h-1/4 overflow-hidden flex items-center justify-stretch">
-        <div className='w-full max-w-lg flex flex-col items-start justify-center gap-3'>
-          <h1 className='font-bold text-6xl line-clamp-1' title="Vercel Enterprise">Vercel Enterprise</h1>
-          <p className='font-normal text-sm text-neutral-400 line-clamp-3'>
-            We are a full-service digital agency that builds immesive user We are a full-service digital agency that builds immesive user We are a full-service digital agency that builds immesive user
+      <Box className="relative flex h-1/4 w-full items-center justify-stretch overflow-hidden p-10">
+        <div className="flex w-full max-w-lg flex-col items-start justify-center gap-3">
+          <h1
+            className="line-clamp-1 text-6xl font-bold"
+            title="Vercel Enterprise"
+          >
+            Vercel Enterprise
+          </h1>
+          <p className="line-clamp-3 text-sm font-normal text-neutral-400">
+            We are a full-service digital agency that builds immesive user We
+            are a full-service digital agency that builds immesive user We are a
+            full-service digital agency that builds immesive user
           </p>
         </div>
-        <div>
-          <p></p>
+        <div className="flex flex-col">
+          <p>Website: vercel.com.br</p>
+          <p>Email: vercel@gmail.com</p>
+          <p>Phone: (11) 99999-9999</p>
         </div>
       </Box>
     </>
