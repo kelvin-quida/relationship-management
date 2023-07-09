@@ -4,18 +4,17 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { setCookie } from 'nookies'
-import axios from 'axios'
 import { api } from '@/lib/api'
 
 const FormSchema = z.object({
-  email: z.string(),
-  password: z.string(),
+  email: z.string().email({message:'Email invalido!'}),
+  password: z.string().min(3,{ message: 'Deve ter pelo menos 5 caracteres!' }),
 })
 
 type LoginFormData = z.infer<typeof FormSchema>
 
 export default function FormLogin() {
-  const { register, handleSubmit } = useForm<LoginFormData>({
+  const { register, handleSubmit, formState:{errors} } = useForm<LoginFormData>({
     resolver: zodResolver(FormSchema),
   })
   const router = useRouter()
@@ -62,8 +61,13 @@ export default function FormLogin() {
                   type="email"
                   autoComplete="email"
                   required
-                  className="block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6"
+                  className={`block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6 ${
+                    errors.email ? 'border-red-500' : ''
+                  }`}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                )}
               </div>
             </div>
 
@@ -91,8 +95,13 @@ export default function FormLogin() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  className="block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6"
+                  className={`block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6${
+                    errors.password ? 'border-red-500' : ''
+                  }`}
                 />
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                )}
               </div>
             </div>
 

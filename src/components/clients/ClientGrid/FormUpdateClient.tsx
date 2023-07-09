@@ -1,6 +1,6 @@
 'use client'
 import { z } from 'zod'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { parseCookies } from 'nookies'
 import { Modal } from '@/components/ui/Modal'
@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { useState } from 'react'
 import { Client } from '@prisma/client'
+import { Combobox } from '@/components/ui/Combobox'
 
 const UpdateClientSchema = z.object({
   name: z.string().optional(),
@@ -17,6 +18,7 @@ const UpdateClientSchema = z.object({
   phone: z.string().optional(),
   address: z.string().optional(),
   role: z.string().optional(),
+  office: z.string().optional(),
   officeId: z.string().optional(),
 })
 
@@ -30,7 +32,7 @@ export function FormUpdateClient({ data }: Props) {
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const { register, handleSubmit } = useForm<UpdateClientData>({
+  const { register, handleSubmit, control } = useForm<UpdateClientData>({
     resolver: zodResolver(UpdateClientSchema),
   })
 
@@ -105,6 +107,14 @@ export function FormUpdateClient({ data }: Props) {
             placeholder="role"
             defaultValue={data.role ?? ''}
             {...register('role')}
+          />
+          <Controller
+            control={control}
+            name="officeId"
+            defaultValue={data.officeId ?? ''}
+            render={({ field: { onChange } }) => (
+              <Combobox onValueChange={onChange} />
+            )}
           />
           <Button color="primary" type="submit">
             ENVIA AI MANO

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/Popover"
 import { useQuery } from "@tanstack/react-query"
 import { getOffices } from "@/queries/getOffices"
+import { Check } from "lucide-react"
 
 type Props = {
   onValueChange: (value: string) => void
@@ -47,7 +48,7 @@ export function Combobox({ onValueChange }: Props) {
           {value
             ? offices?.find((office) => office.id === value)?.name
             : "Selecione um escritório"}
-          <Chevron className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          {/* <Chevron className="ml-2 h-4 w-4 shrink-0 opacity-50" /> */}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">

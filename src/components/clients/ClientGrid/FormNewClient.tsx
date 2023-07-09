@@ -6,8 +6,7 @@ import { parseCookies } from 'nookies'
 import { Modal } from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
 import { useState } from 'react'
-import { getOffices } from '@/queries/getOffices'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Input from '@/components/ui/Input'
 import { api } from '@/lib/api'
 import { Combobox } from '@/components/ui/Combobox'
@@ -26,11 +25,6 @@ type AddClientData = z.infer<typeof AddClientSchema>
 
 export function FormNewClient() {
   const queryClient = useQueryClient()
-
-  const { data: offices } = useQuery({
-    queryKey: ['offices'],
-    queryFn: getOffices,
-  })
 
   const { register, handleSubmit, control } = useForm<AddClientData>({
     resolver: zodResolver(AddClientSchema),
@@ -104,7 +98,7 @@ export function FormNewClient() {
             control={control}
             name="officeId"
             render={({ field: { onChange } }) => (
-              <Combobox  onValueChange={onChange} />
+              <Combobox onValueChange={onChange} />
             )}
           />
           <Button color="primary" className="z-50" type="submit">
