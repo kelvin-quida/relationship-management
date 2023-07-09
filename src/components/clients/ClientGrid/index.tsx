@@ -78,6 +78,7 @@ const columns: ColumnDef<Client>[] = [
   },
   {
     id: 'actions',
+    header: 'Ações',
     cell: () => null,
   },
 ]
