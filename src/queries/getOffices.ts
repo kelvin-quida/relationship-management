@@ -27,5 +27,5 @@ export async function getOffice(id: string) {
     },
   })
 
-  return data as TOfficeWithClient[]
+  return data as TOfficeWithClient
 }

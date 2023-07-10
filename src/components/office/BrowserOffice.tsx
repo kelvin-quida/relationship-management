@@ -7,7 +7,6 @@ import {
   GlobeAltIcon,
   MapPinIcon,
 } from '@heroicons/react/24/outline'
-import Button from '../ui/Button'
 import Anchor from '../ui/Anchor'
 
 type Props = {
@@ -19,8 +18,6 @@ export default function BrowserOffice({ id }: Props) {
     queryKey: ['offices', id],
     queryFn: ({ queryKey }) => getOffice(queryKey[1]),
   })
-
-  console.log(office?.website)
 
   return (
     <>
@@ -67,7 +64,7 @@ export default function BrowserOffice({ id }: Props) {
         </div>
         <div className="h-full w-1/3 rounded-lg border border-neutral-800 bg-background p-4">
           <p
-            title={office?.description}
+            title={office?.description ?? ''}
             className="line-clamp-5 text-sm font-normal text-neutral-400"
           >
             {office?.description}
