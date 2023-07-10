@@ -3,14 +3,13 @@ import {
   ArrowLeftOnRectangleIcon,
   BuildingOfficeIcon,
   CalendarIcon,
-  ChartBarIcon,
   RectangleStackIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/solid'
 import { usePathname, useRouter } from 'next/navigation'
 import NavLink from '../NavLink'
 import { ReactNode } from 'react'
-import { destroyCookie, parseCookies } from 'nookies'
+import { destroyCookie } from 'nookies'
 
 type TNavMenu = {
   name: string

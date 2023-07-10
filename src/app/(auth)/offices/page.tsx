@@ -1,5 +1,4 @@
 import OfficeGrid from '@/components/offices/OfficeGrid'
-import SliderModal from '@/components/ui/SliderModal'
 import getQueryClient from '@/lib/queryClient'
 import { getOffices } from '@/queries/getOffices'
 import { Hydrate, dehydrate } from '@tanstack/react-query'

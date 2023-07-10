@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { setCookie } from 'nookies'
 import { api } from '@/lib/api'
-import { NextResponse } from 'next/server'
 
 const FormSchema = z.object({
   email: z.string().email({ message: 'Email invalido!' }),
