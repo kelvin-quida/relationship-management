@@ -11,11 +11,21 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Button from '../ui/Button'
 
 const AddOfficeSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  location: z.string(),
-  email: z.string(),
-  phone: z.string(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  location: z.string().optional(),
+  email: z.string().email().optional(),
+  phone: z
+    .string()
+    .transform(
+      (value) =>
+        '(' +
+        value.slice(0, 2) +
+        ') ' +
+        value.slice(2, 7) +
+        '-' +
+        value.slice(7, 11),
+    ),
 })
 
 type AddOfficeData = z.infer<typeof AddOfficeSchema>
@@ -88,7 +98,7 @@ export function FormNewOffice() {
           <Input
             color="primary"
             type="text"
-            placeholder="Location"
+            placeholder="Localização"
             {...register('location')}
           />
           <Input
