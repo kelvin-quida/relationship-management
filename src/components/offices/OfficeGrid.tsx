@@ -1,7 +1,6 @@
 'use client'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { parseCookies } from 'nookies'
-import { useDataContext } from '@/context/MainContext'
 import SliderModal from '@/components/ui/SliderModal'
 import Box from '@/components/ui/Box'
 import Input from '@/components/ui/Input'
@@ -39,7 +38,7 @@ type Office = {
   id: string
   name: string
   phone: string | null
-  location: string | undefined
+  location: string | null
   website: string | null
 }
 
