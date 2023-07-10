@@ -73,7 +73,6 @@ export function FormNewClient() {
     },
   })
 
-  console.log(mutation.error)
   return (
     <>
       <Modal
