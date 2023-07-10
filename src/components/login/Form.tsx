@@ -40,7 +40,7 @@ export default function FormLogin() {
         return router.push('/clients')
       }
     } catch (error) {
-      console.log(error.response.data.error)
+      // console.log(error.response.data.error)
     }
   }
 
