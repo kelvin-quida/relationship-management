@@ -19,10 +19,10 @@ export async function GET(req: NextRequest) {
     where: {
       id,
     },
-    include:{
+    include: {
       historyGift: true,
       client: true,
-    }
+    },
   })
 
   return NextResponse.json(findOffice)
