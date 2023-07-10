@@ -8,22 +8,20 @@ type Props = {
 }
 
 export default function BrowserOffice({ id }: Props) {
-  const { data } = useQuery({
+  const { data: offices } = useQuery({
     queryKey: ['offices', id],
     queryFn: ({ queryKey }) => getOffice(queryKey[1]),
   })
 
-  console.log(data)
-
   return (
     <>
-      <Box className="relative flex h-[220px] min-h-[220px] w-full items-center justify-stretch overflow-hidden p-10">
+      <Box className="relative flex h-1/4 w-full items-center justify-stretch overflow-hidden p-10">
         <div className="flex w-full max-w-lg flex-col items-start justify-center gap-3">
           <h1
             className="line-clamp-1 text-6xl font-bold"
             title="Vercel Enterprise"
           >
-            {data?.name}
+            Vercel Enterprise
           </h1>
           <p className="line-clamp-3 text-sm font-normal text-neutral-400">
             We are a full-service digital agency that builds immesive user We

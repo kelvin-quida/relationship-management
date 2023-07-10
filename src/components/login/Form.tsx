@@ -34,7 +34,7 @@ export default function FormLogin() {
         maxAge: 30 * 24 * 60 * 60,
         path: '/',
       })
-      router.push('/clients')
+      router.push('/dashboard')
     }
   }
 

@@ -20,6 +20,11 @@ type TNavMenu = {
 
 const navigation = [
   {
+    name: 'Dashboard',
+    href: '/dashboard',
+    icon: <ChartBarIcon className="h-6 w-6" />,
+  },
+  {
     name: 'Clientes',
     href: '/clients',
     icon: <UserGroupIcon className="h-6 w-6" />,
@@ -43,10 +48,11 @@ export default function Sidebar() {
   function handleLogout() {
     const { token } = parseCookies()
     const noCookies = destroyCookie({}, token)
-
+    
     if (noCookies) {
       return router.push('/')
     }
+
   }
 
   return (
@@ -66,10 +72,7 @@ export default function Sidebar() {
             {icon}
           </NavLink>
         ))}
-        <div
-          onClick={handleLogout}
-          className="flex h-full flex-col items-center justify-end"
-        >
+        <div onClick={handleLogout} className="flex h-full flex-col items-center justify-end">
           <NavLink title="Sair" color="warn" size="sm" href="#">
             <ArrowLeftOnRectangleIcon className="h-6 w-6" />
           </NavLink>

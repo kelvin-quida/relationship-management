@@ -24,8 +24,9 @@ export async function getOffice(id: string) {
     },
     params: {
       id,
-    },
+    }
   })
 
   return data as TOfficeWithClient[]
 }
+
