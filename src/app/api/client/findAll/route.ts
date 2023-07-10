@@ -9,7 +9,6 @@ export async function GET(req: NextRequest) {
     },
   })
 
-  console.log(findAllClients)
   const Auth = AuthRoute(req)
 
   if (!Auth) {

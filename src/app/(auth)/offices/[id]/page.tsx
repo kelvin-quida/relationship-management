@@ -10,7 +10,6 @@ interface Props {
 }
 
 export default function OfficeID({ params }: Props) {
-  console.log(params.id)
   return (
     <div className="mx-auto flex h-screen w-full flex-col gap-4 p-6">
       <BrowserOffice id={params.id} />

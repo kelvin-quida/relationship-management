@@ -8,8 +8,6 @@ export async function GET(req: NextRequest) {
       office: true,
     },
   })
-
-  console.log(findAllGifts)
   const Auth = AuthRoute(req)
 
   if (!Auth) {
