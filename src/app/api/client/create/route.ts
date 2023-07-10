@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     })
 
     if (findClient) {
-      return NextResponse.json('Client already exists')
+      return NextResponse.error()
     }
 
     const client = await prisma.client.create({

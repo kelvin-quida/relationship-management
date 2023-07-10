@@ -13,7 +13,7 @@ import { Combobox } from '@/components/ui/Combobox'
 
 const AddClientSchema = z.object({
   name: z.string().optional(),
-  email: z.string().optional(),
+  email: z.string().email().optional(),
   phone: z
     .string()
     .transform(
@@ -36,11 +36,12 @@ type AddClientData = z.infer<typeof AddClientSchema>
 export function FormNewClient() {
   const queryClient = useQueryClient()
 
-  const { register, handleSubmit, control } = useForm<AddClientData>({
+  const { register, handleSubmit, control, formState:{errors} } = useForm<AddClientData>({
     resolver: zodResolver(AddClientSchema),
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  {console.log(errors)}
   async function handleAddClient(payload: AddClientData) {
     const { token } = parseCookies()
 
@@ -65,7 +66,7 @@ export function FormNewClient() {
     mutationFn: handleAddClient,
     onSuccess: () => {
       queryClient.invalidateQueries(['clients'])
-    },
+    }
   })
 
   return (
@@ -79,7 +80,7 @@ export function FormNewClient() {
           className="flex flex-col items-center justify-start gap-3"
           onSubmit={handleSubmit(handleAddClientSubmit)}
         >
-          <h1>New Client</h1>
+          <h1 className='text-white'>New Client</h1>
           <Input
             color="primary"
             type="text"
@@ -92,6 +93,7 @@ export function FormNewClient() {
             placeholder="Email"
             {...register('email')}
           />
+          {mutation.error}
           <Input
             color="primary"
             type="text"
