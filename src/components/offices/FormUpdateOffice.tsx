@@ -37,15 +37,11 @@ export function FormUpdateOffice({ data }: Props) {
   async function handleUpdateOffice(payload: UpdateOfficeData) {
     const { token } = parseCookies()
 
-    await api.patch(
-      `/office/update?id=${data.id}`,
-      payload,
-      {
-        headers: {
-          Authorization: `${token}`,
-        },
+    await api.patch(`/office/update?id=${data.id}`, payload, {
+      headers: {
+        Authorization: `${token}`,
       },
-    )
+    })
   }
 
   async function handleUpdateOfficeSubmit(payload: UpdateOfficeData) {
@@ -63,10 +59,9 @@ export function FormUpdateOffice({ data }: Props) {
     },
   })
 
-
   return (
     <>
-    <Modal
+      <Modal
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
         buttonTitle="Editar"

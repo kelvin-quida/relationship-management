@@ -7,11 +7,12 @@ import { useDataContext } from '@/context/MainContext'
 import Button from '../Button'
 
 export default function SliderModal() {
-  const { isDialogOpen, closeDialog, officeData, openDialog, clientData } = useDataContext()
+  const { isDialogOpen, closeDialog, officeData, openDialog, clientData } =
+    useDataContext()
 
   return (
     <Transition.Root show={isDialogOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={openDialog} >
+      <Dialog as="div" className="relative z-10" onClose={openDialog}>
         <Transition.Child
           as={Fragment}
           enter="ease-in-out duration-500"
@@ -49,18 +50,25 @@ export default function SliderModal() {
                     <div className="absolute left-4 top-4">
                       <Button
                         type="button"
-                        color='neutral'
+                        color="neutral"
                         onClick={closeDialog}
-                      >Fechar</Button>
+                      >
+                        Fechar
+                      </Button>
                     </div>
                   </Transition.Child>
-                  <div className="flex h-screen overflow-auto w-full flex-col bg-background border p-4 pt-16 border-neutral-800 rounded-l-3xl py-6 ">
-                    <div className="px-4 sm:px-6 text-white">
-                      <p> {clientData ? (
-                          <p className='text-white'>{JSON.stringify(clientData)}</p>
+                  <div className="flex h-screen w-full flex-col overflow-auto rounded-l-3xl border border-neutral-800 bg-background p-4 py-6 pt-16 ">
+                    <div className="px-4 text-white sm:px-6">
+                      <p>
+                        {' '}
+                        {clientData ? (
+                          <p className="text-white">
+                            {JSON.stringify(clientData)}
+                          </p>
                         ) : (
                           <p>{JSON.stringify(officeData)}</p>
-                        )}</p>
+                        )}
+                      </p>
                     </div>
                   </div>
                 </Dialog.Panel>

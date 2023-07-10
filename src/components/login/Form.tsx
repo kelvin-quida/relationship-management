@@ -25,13 +25,12 @@ export default function FormLogin() {
   const router = useRouter()
 
   async function FormSubmit(data: LoginFormData) {
-
     try {
       const loginUser = await api.post('/login', {
         email: data.email,
         password: data.password,
       })
-  
+
       if (loginUser) {
         setCookie(null, 'token', `${process.env.NEXT_PUBLIC_TOKEN}`, {
           maxAge: 30 * 24 * 60 * 60,

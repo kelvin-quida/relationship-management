@@ -285,7 +285,7 @@ const Table = ({ table, clients, onDelete }: TableProps) => {
                     scope="col"
                     className={cn({
                       'text-left': true,
-                      'text-left px-4': header.id.includes('name'),
+                      'px-4 text-left': header.id.includes('name'),
                     })}
                   >
                     {header.isPlaceholder
@@ -333,7 +333,7 @@ const Table = ({ table, clients, onDelete }: TableProps) => {
                     <td
                       key={cell.id}
                       className={cn({
-                        'p-4 rounded-lg flex flex-col gap-1 my-2 mr-10 items-start justify-center border border-transparent duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800 cursor-pointer text-white font-semibold text-base':
+                        'my-2 mr-10 flex cursor-pointer flex-col items-start justify-center gap-1 rounded-lg border border-transparent p-4 text-base font-semibold text-white duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800':
                           cell.id.includes('name'),
                       })}
                       onClick={() => {

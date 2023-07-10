@@ -1,24 +1,24 @@
-"use client"
+'use client'
 
-import * as React from "react"
+import * as React from 'react'
 
-import { cn } from "@/lib/utils"
-import Button from "@/components/ui/Button"
+import { cn } from '@/lib/utils'
+import Button from '@/components/ui/Button'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/Command"
+} from '@/components/ui/Command'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/Popover"
-import { useQuery } from "@tanstack/react-query"
-import { getOffices } from "@/queries/getOffices"
-import { Check } from "lucide-react"
+} from '@/components/ui/Popover'
+import { useQuery } from '@tanstack/react-query'
+import { getOffices } from '@/queries/getOffices'
+import { Check } from 'lucide-react'
 
 type Props = {
   onValueChange: (value: string) => void
@@ -26,19 +26,18 @@ type Props = {
 
 export function Combobox({ onValueChange }: Props) {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
+  const [value, setValue] = React.useState('')
 
   const { data: offices } = useQuery({
     queryKey: ['offices'],
     queryFn: getOffices,
   })
 
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-        //   variant="outline"
+          //   variant="outline"
 
           color="neutral"
           role="combobox"
@@ -47,7 +46,7 @@ export function Combobox({ onValueChange }: Props) {
         >
           {value
             ? offices?.find((office) => office.id === value)?.name
-            : "Selecione um escritório"}
+            : 'Selecione um escritório'}
           {/* <Chevron className="ml-2 h-4 w-4 shrink-0 opacity-50" /> */}
         </Button>
       </PopoverTrigger>
@@ -61,15 +60,15 @@ export function Combobox({ onValueChange }: Props) {
                 key={office.id}
                 value={office.id}
                 onSelect={(currentValue) => {
-                  onValueChange(currentValue === value ? "" : currentValue)
-                  setValue(currentValue === value ? "" : currentValue)
+                  onValueChange(currentValue === value ? '' : currentValue)
+                  setValue(currentValue === value ? '' : currentValue)
                   setOpen(false)
                 }}
               >
                 <Check
                   className={cn(
-                    "mr-2 h-4 w-4",
-                    value === office.id ? "opacity-100" : "opacity-0"
+                    'mr-2 h-4 w-4',
+                    value === office.id ? 'opacity-100' : 'opacity-0',
                   )}
                 />
                 {office.name}

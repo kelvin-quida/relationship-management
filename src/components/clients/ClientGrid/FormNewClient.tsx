@@ -36,11 +36,7 @@ type AddClientData = z.infer<typeof AddClientSchema>
 export function FormNewClient() {
   const queryClient = useQueryClient()
 
-  const {
-    register,
-    handleSubmit,
-    control,
-  } = useForm<AddClientData>({
+  const { register, handleSubmit, control } = useForm<AddClientData>({
     resolver: zodResolver(AddClientSchema),
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
