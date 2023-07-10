@@ -1,12 +1,12 @@
 'use server'
 import { cookies } from 'next/headers'
-import axios from 'axios'
 import { TClientWithOffice } from '@/types'
+import { api } from '@/lib/api'
 
 export async function getClients() {
   const token = cookies().get('token')
 
-  const { data } = await axios.get('http://localhost:3000/api/client/findAll', {
+  const { data } = await api.get('/client/findAll', {
     headers: {
       Authorization: `${token?.value}`,
     },
