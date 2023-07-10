@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { setCookie } from 'nookies'
 import { api } from '@/lib/api'
+import { NextResponse } from 'next/server'
 
 const FormSchema = z.object({
   email: z.string().email({ message: 'Email invalido!' }),
@@ -24,17 +25,22 @@ export default function FormLogin() {
   const router = useRouter()
 
   async function FormSubmit(data: LoginFormData) {
-    const loginUser = await api.post('/login', {
-      email: data.email,
-      password: data.password,
-    })
 
-    if (loginUser) {
-      setCookie(null, 'token', `${process.env.NEXT_PUBLIC_TOKEN}`, {
-        maxAge: 30 * 24 * 60 * 60,
-        path: '/',
+    try {
+      const loginUser = await api.post('/login', {
+        email: data.email,
+        password: data.password,
       })
-      router.push('/clients')
+  
+      if (loginUser) {
+        setCookie(null, 'token', `${process.env.NEXT_PUBLIC_TOKEN}`, {
+          maxAge: 30 * 24 * 60 * 60,
+          path: '/',
+        })
+        return router.push('/clients')
+      }
+    } catch (error) {
+      console.log(error.response.data.error)
     }
   }
 
@@ -54,7 +60,7 @@ export default function FormLogin() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6 text-white"
               >
                 Email
               </label>
@@ -81,7 +87,7 @@ export default function FormLogin() {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 text-white"
                 >
                   Senha
                 </label>

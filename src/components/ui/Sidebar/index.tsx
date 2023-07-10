@@ -41,8 +41,7 @@ export default function Sidebar() {
   const router = useRouter()
 
   function handleLogout() {
-    const { token } = parseCookies()
-    const noCookies = destroyCookie({}, token)
+    const noCookies = destroyCookie(null, 'token')
 
     if (noCookies) {
       return router.push('/')
