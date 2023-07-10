@@ -40,7 +40,6 @@ export function FormNewClient() {
     register,
     handleSubmit,
     control,
-    formState: { errors },
   } = useForm<AddClientData>({
     resolver: zodResolver(AddClientSchema),
   })
@@ -99,7 +98,10 @@ export function FormNewClient() {
           />
           {mutation.error ? (
             <p className="mt-1 text-sm text-red-500">
-              {mutation.error.response.data.error}
+              {
+                (mutation.error as { response: { data: { error: string } } })
+                  .response.data.error
+              }
             </p>
           ) : null}
           <Input
