@@ -21,7 +21,10 @@ export async function POST(req: NextRequest) {
     })
 
     if (findClient) {
-      return NextResponse.error()
+      return NextResponse.json(
+        { error: 'Cliente já cadastrado' },
+        { status: 400 },
+      )
     }
 
     const client = await prisma.client.create({

@@ -36,22 +36,26 @@ type AddClientData = z.infer<typeof AddClientSchema>
 export function FormNewClient() {
   const queryClient = useQueryClient()
 
-  const { register, handleSubmit, control, formState:{errors} } = useForm<AddClientData>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<AddClientData>({
     resolver: zodResolver(AddClientSchema),
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  {console.log(errors)}
   async function handleAddClient(payload: AddClientData) {
     const { token } = parseCookies()
 
-    const { data } = await api.post('/client/create', payload, {
+    const { data, status } = await api.post('/client/create', payload, {
       headers: {
         Authorization: `${token}`,
       },
     })
 
-    return data
+    return { data, status }
   }
 
   async function handleAddClientSubmit(payload: AddClientData) {
@@ -66,9 +70,10 @@ export function FormNewClient() {
     mutationFn: handleAddClient,
     onSuccess: () => {
       queryClient.invalidateQueries(['clients'])
-    }
+    },
   })
 
+  console.log(mutation.error)
   return (
     <>
       <Modal
@@ -80,7 +85,7 @@ export function FormNewClient() {
           className="flex flex-col items-center justify-start gap-3"
           onSubmit={handleSubmit(handleAddClientSubmit)}
         >
-          <h1 className='text-white'>New Client</h1>
+          <h1 className="text-white">New Client</h1>
           <Input
             color="primary"
             type="text"
@@ -93,7 +98,11 @@ export function FormNewClient() {
             placeholder="Email"
             {...register('email')}
           />
-          {mutation.error}
+          {mutation.error ? (
+            <p className="mt-1 text-sm text-red-500">
+              {mutation.error.response.data.error}
+            </p>
+          ) : null}
           <Input
             color="primary"
             type="text"
