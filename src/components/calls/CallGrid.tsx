@@ -336,13 +336,7 @@ const Table = ({ table, calls, onDelete }: TableProps) => {
                           cell.id.includes('name'),
                       })}
                     >
-                      <Link
-                        href={
-                          cell.id.includes('name')
-                            ? `/calls/${calls?.[cell.row.index].id}`
-                            : '#'
-                        }
-                      >
+                      <p>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),
@@ -352,7 +346,7 @@ const Table = ({ table, calls, onDelete }: TableProps) => {
                             {calls?.[cell.row.index].phone}
                           </p>
                         ) : null}
-                      </Link>
+                      </p>
                     </td>
                   )
                 })}
