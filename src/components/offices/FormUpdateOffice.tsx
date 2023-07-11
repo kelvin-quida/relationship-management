@@ -10,14 +10,24 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Modal } from '../ui/Modal'
 import Input from '../ui/Input'
 import Button from '../ui/Button'
+import TextArea from '../ui/TextArea'
 
 const UpdateOfficeSchema = z.object({
-  name: z.string().optional(),
-  description: z.string().optional(),
+  name: z
+    .string()
+    .min(3, { message: 'Mínimo de 3 caracteres' })
+    .max(20, { message: 'Máximo de 20 caracteres' }),
+  email: z.string().email().min(10, { message: 'Email inválido' }),
+  phone: z
+    .string()
+    .min(10, { message: 'Telefone inválido' })
+    .max(15, { message: 'Telefone inválido' })
+    .transform((value) =>
+      value.replace(/\D/g, '').replace(/^(\d{2})(\d)/g, '($1) $2'),
+    ),
   location: z.string().optional(),
-  email: z.string().optional(),
-  phone: z.string().optional(),
   website: z.string().optional(),
+  description: z.string().optional(),
 })
 
 type UpdateOfficeData = z.infer<typeof UpdateOfficeSchema>
@@ -30,7 +40,11 @@ export function FormUpdateOffice({ data }: Props) {
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const { register, handleSubmit } = useForm<UpdateOfficeData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UpdateOfficeData>({
     resolver: zodResolver(UpdateOfficeSchema),
   })
 
@@ -64,52 +78,100 @@ export function FormUpdateOffice({ data }: Props) {
       <Modal
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
+        closeButton
         buttonTitle="Editar"
       >
+        <div className="flex flex-col items-start justify-center gap-1 pt-2">
+          <h1 className="px-6 text-xl font-bold text-white">
+            Formulário de Edição
+          </h1>
+          <p className="px-6 text-base font-normal text-neutral-400">
+            Edite um escritório
+          </p>
+        </div>
         <form
-          className="flex flex-col items-center justify-start gap-3"
+          className="flex flex-col items-stretch justify-start gap-4 p-6"
           onSubmit={handleSubmit(handleUpdateOfficeSubmit)}
         >
-          <h1>Editar</h1>
-          <Input
+          <div className="flex w-full gap-4">
+            <Input
+              color="primary"
+              type="text"
+              placeholder="Nome"
+              defaultValue={data.name ?? ''}
+              className="w-full"
+              error={errors.name?.message}
+              {...register('name')}
+            />
+            <Input
+              color="primary"
+              type="email"
+              className="w-full"
+              defaultValue={data?.email ?? ''}
+              placeholder="Email"
+              error={errors.email?.message}
+              {...register('email')}
+            />
+          </div>
+
+          <div className="flex w-full gap-4">
+            <Input
+              defaultValue={data.phone ?? ''}
+              color="primary"
+              type="text"
+              placeholder="Telefone"
+              error={errors.phone?.message}
+              {...register('phone')}
+            />
+            <Input
+              defaultValue={data.location ?? ''}
+              color="primary"
+              type="text"
+              placeholder="Endereço"
+              error={errors.location?.message}
+              {...register('location')}
+            />
+          </div>
+          <TextArea
             color="primary"
-            type="text"
-            placeholder="Name"
-            defaultValue={data.name}
-            {...register('name')}
-          />
-          <Input
-            type="text"
-            color="primary"
-            placeholder="Description"
+            placeholder="Descrição sobre este cliente"
+            className="w-full p-3"
             defaultValue={data.description ?? ''}
+            error={errors.description?.message}
             {...register('description')}
           />
-          <Input
-            type="text"
-            color="primary"
-            placeholder="Location"
-            defaultValue={data.location ?? ''}
-            {...register('location')}
-          />
-          <Input
-            type="email"
-            color="primary"
-            placeholder="Email"
-            defaultValue={data.email}
-            {...register('email')}
-          />
-
-          <Input
-            type="text"
-            color="primary"
-            placeholder="Phone"
-            defaultValue={data.phone ?? ''}
-            {...register('phone')}
-          />
-          <Button color="primary" type="submit">
-            ENVIA AI MANO
-          </Button>
+          <div className="flex w-full gap-4">
+            <Input
+              defaultValue={data.website ?? ''}
+              color="primary"
+              type="text"
+              placeholder="Website"
+              className="w-full"
+              error={errors.website?.message}
+              {...register('website')}
+            />
+          </div>
+          {mutation.error ? (
+            <p className="mt-1 text-sm text-red-500">
+              {
+                (mutation.error as { response: { data: { error: string } } })
+                  .response.data.error
+              }
+            </p>
+          ) : null}
+          <div className="flex w-full items-center justify-end gap-2 pt-4">
+            <Button
+              color="neutral"
+              onClick={() => setIsModalOpen(false)}
+              className="z-50"
+              type="button"
+            >
+              Cancelar
+            </Button>
+            <Button color="primary" className="z-50" type="submit">
+              Adicionar Cliente
+            </Button>
+          </div>
         </form>
       </Modal>
     </>

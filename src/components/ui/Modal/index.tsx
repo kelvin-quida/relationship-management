@@ -6,10 +6,17 @@ type Props = {
   children: ReactNode
   buttonTitle: string
   isOpen?: boolean
+  closeButton?: boolean
   onOpenChange?: (isOpen: boolean) => void
 }
 
-export function Modal({ children, buttonTitle, isOpen, onOpenChange }: Props) {
+export function Modal({
+  children,
+  buttonTitle,
+  isOpen,
+  closeButton,
+  onOpenChange,
+}: Props) {
   return (
     <>
       <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
@@ -23,9 +30,11 @@ export function Modal({ children, buttonTitle, isOpen, onOpenChange }: Props) {
             {children}
 
             <Dialog.Close asChild>
-              <Button color="neutral" className="absolute right-4 top-4">
-                Fechar
-              </Button>
+              {!closeButton && (
+                <Button color="neutral" className="absolute right-4 top-4">
+                  Fechar
+                </Button>
+              )}
             </Dialog.Close>
           </Dialog.Content>
         </Dialog.Portal>

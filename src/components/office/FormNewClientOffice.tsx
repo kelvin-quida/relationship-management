@@ -1,17 +1,17 @@
 'use client'
-import { useState } from 'react'
 import { z } from 'zod'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { parseCookies } from 'nookies'
-import { api } from '@/lib/api'
 import { Modal } from '@/components/ui/Modal'
-import Input from '../ui/Input'
+import Button from '@/components/ui/Button'
+import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import Button from '../ui/Button'
-import TextArea from '../ui/TextArea'
+import Input from '@/components/ui/Input'
+import { api } from '@/lib/api'
+import TextArea from '@/components/ui/TextArea'
 
-const AddOfficeSchema = z.object({
+const AddClientSchema = z.object({
   name: z
     .string()
     .min(3, { message: 'Mínimo de 3 caracteres' })
@@ -24,38 +24,61 @@ const AddOfficeSchema = z.object({
     .transform((value) =>
       value.replace(/\D/g, '').replace(/^(\d{2})(\d)/g, '($1) $2'),
     ),
-  location: z.string().optional(),
-  website: z.string().optional(),
+  address: z.string().optional(),
+  role: z.string().min(3, { message: 'Mínimo de 3 caracteres' }),
   description: z.string().optional(),
 })
 
-type AddOfficeData = z.infer<typeof AddOfficeSchema>
+type Props = {
+  officeId: string
+}
 
-export function FormNewOffice() {
+type AddClientData = z.infer<typeof AddClientSchema>
+
+export function FormNewClientOffice({ officeId }: Props) {
   const queryClient = useQueryClient()
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AddOfficeData>({
-    resolver: zodResolver(AddOfficeSchema),
+  } = useForm<AddClientData>({
+    resolver: zodResolver(AddClientSchema),
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  async function handleAddOffice(payload: AddOfficeData) {
+  async function handleAddClient({
+    email,
+    phone,
+    name,
+    role,
+    address,
+    description,
+  }: AddClientData) {
     const { token } = parseCookies()
 
-    const { data } = await api.post('/office/create', payload, {
-      headers: {
-        Authorization: `${token}`,
+    const { data, status } = await api.post(
+      '/client/create',
+      {
+        email,
+        phone,
+        name,
+        role,
+        address,
+        description,
+        officeId,
       },
-    })
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      },
+    )
 
-    return data
+    return { data, status }
   }
 
-  async function handleAddOfficeSubmit(payload: AddOfficeData) {
+  async function handleAddClientSubmit(payload: AddClientData) {
     mutation.mutate(payload, {
       onSuccess: () => {
         setIsModalOpen(false)
@@ -64,9 +87,9 @@ export function FormNewOffice() {
   }
 
   const mutation = useMutation({
-    mutationFn: handleAddOffice,
+    mutationFn: handleAddClient,
     onSuccess: () => {
-      queryClient.invalidateQueries(['offices'])
+      queryClient.invalidateQueries(['clients'])
     },
   })
 
@@ -74,21 +97,21 @@ export function FormNewOffice() {
     <>
       <Modal
         isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
         closeButton
-        buttonTitle="Adicionar Escritório"
+        onOpenChange={setIsModalOpen}
+        buttonTitle="Adicionar Cliente"
       >
         <div className="flex flex-col items-start justify-center gap-1 pt-2">
           <h1 className="px-6 text-xl font-bold text-white">
             Formulário de Cadastro
           </h1>
           <p className="px-6 text-base font-normal text-neutral-400">
-            Adicione um novo escritório
+            Adicione um novo cliente
           </p>
         </div>
         <form
           className="flex flex-col items-stretch justify-start gap-4 p-6"
-          onSubmit={handleSubmit(handleAddOfficeSubmit)}
+          onSubmit={handleSubmit(handleAddClientSubmit)}
         >
           <div className="flex w-full gap-4">
             <Input
@@ -121,8 +144,8 @@ export function FormNewOffice() {
               color="primary"
               type="text"
               placeholder="Endereço"
-              error={errors.location?.message}
-              {...register('location')}
+              error={errors.address?.message}
+              {...register('address')}
             />
           </div>
           <TextArea
@@ -136,10 +159,10 @@ export function FormNewOffice() {
             <Input
               color="primary"
               type="text"
-              placeholder="Website"
+              placeholder="Cargo"
               className="w-full"
-              error={errors.website?.message}
-              {...register('website')}
+              error={errors.role?.message}
+              {...register('role')}
             />
           </div>
           {mutation.error ? (

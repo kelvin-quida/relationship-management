@@ -6,6 +6,7 @@ import {
   EnvelopeIcon,
   GlobeAltIcon,
   MapPinIcon,
+  PhoneIcon,
 } from '@heroicons/react/24/outline'
 import Anchor from '../ui/Anchor'
 
@@ -49,6 +50,16 @@ export default function BrowserOffice({ id }: Props) {
             >
               <EnvelopeIcon className="h-5 w-5" />
               <p>{office?.email}</p>
+            </Anchor>
+            <Anchor
+              href={`tel:${office?.phone}`}
+              target="_blank"
+              rel="noreferrer"
+              color="neutral"
+              className="flex items-center justify-start gap-2 text-neutral-400"
+            >
+              <PhoneIcon className="h-5 w-5" />
+              <p>{office?.phone}</p>
             </Anchor>
             <Anchor
               href={`https://www.google.com.br/maps/place/${office?.location}`}

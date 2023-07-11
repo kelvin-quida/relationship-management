@@ -1,5 +1,5 @@
 'use client'
-import { getClients, getClientsOffice } from '@/queries/getClients'
+import { getClientsOffice } from '@/queries/getClients'
 import { TClientWithOffice } from '@/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { parseCookies } from 'nookies'
@@ -32,7 +32,7 @@ import {
 } from '@heroicons/react/24/solid'
 import { cn } from '@/lib/utils'
 import { FormUpdateClient } from '../ClientGrid/FormUpdateClient'
-import { FormNewClient } from '../ClientGrid/FormNewClient'
+import { FormNewClientOffice } from '@/components/office/FormNewClientOffice'
 
 type Client = {
   id: string
@@ -216,7 +216,7 @@ export default function ClientOffice({ id }: Props) {
             />
           </div>
           <div className="flex items-center justify-end gap-4">
-            <FormNewClient />
+            <FormNewClientOffice officeId={id} />
             <div className="flex items-center justify-end space-x-2 py-4">
               <Button
                 color="neutral"

@@ -8,7 +8,7 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
 }
 
 const input = tv({
-  base: 'block h-10 w-80 rounded-lg px-4 text-sm',
+  base: 'block h-10 w-full rounded-lg px-4 text-sm',
   variants: {
     color: {
       primary:
@@ -23,7 +23,7 @@ const input = tv({
 const Input = forwardRef<HTMLInputElement, Props>(
   ({ className, color, error, ...rest }, ref) => {
     return (
-      <div className="flex flex-col items-start justify-start gap-1">
+      <div className="flex w-full flex-col items-start justify-start gap-1">
         <input
           {...rest}
           ref={ref}

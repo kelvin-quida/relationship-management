@@ -42,7 +42,7 @@ export function Combobox({ onValueChange }: Props) {
           role="combobox"
           aria-expanded={open}
         >
-          {value || (
+          {offices?.find((office) => office.id === value)?.name || (
             <span className="text-neutral-500">Selecione um escritório</span>
           )}
         </Button>
@@ -58,13 +58,12 @@ export function Combobox({ onValueChange }: Props) {
             {offices?.map((office) => (
               <CommandItem
                 key={office.id}
-                value={office.name}
+                value={`${office.id} ${office.name}`}
                 onSelect={(currentValue) => {
-                  onValueChange(
-                    offices.find((office) => office.name === currentValue)
-                      ?.id ?? '',
-                  )
-                  setValue(currentValue === value ? '' : currentValue)
+                  console.log(currentValue, offices)
+                  const [id] = currentValue.split(' ')
+                  onValueChange(id)
+                  setValue(id)
                   setOpen(false)
                 }}
               >

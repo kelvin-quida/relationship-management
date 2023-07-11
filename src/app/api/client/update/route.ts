@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function PATCH(req: NextRequest) {
-  const { name, address, email, phone, role, roleAge, officeId } =
+  const { name, address, email, phone, role, roleAge, officeId, description } =
     (await req.json()) as TClientWithOffice
 
   const id = req.nextUrl.searchParams.get('id')
@@ -38,6 +38,7 @@ export async function PATCH(req: NextRequest) {
       name,
       role,
       roleAge,
+      description,
       phone,
       address,
       officeId,

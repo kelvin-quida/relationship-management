@@ -3,6 +3,7 @@ import { tv } from 'tailwind-variants'
 
 type Props = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   color: 'primary'
+  error?: string
 }
 
 const textarea = tv({
@@ -19,16 +20,21 @@ const textarea = tv({
 })
 
 const TextArea = forwardRef<HTMLTextAreaElement, Props>(
-  ({ className, color, ...rest }, ref) => {
+  ({ className, color, error, ...rest }, ref) => {
     return (
-      <textarea
-        {...rest}
-        ref={ref}
-        className={textarea({
-          color,
-          className,
-        })}
-      />
+      <div className="flex w-full flex-col items-start justify-start gap-1">
+        <textarea
+          {...rest}
+          ref={ref}
+          className={textarea({
+            color,
+            className,
+          })}
+        />
+        {error && (
+          <p className="p-1 text-xs font-light text-red-500">{error}</p>
+        )}
+      </div>
     )
   },
 )

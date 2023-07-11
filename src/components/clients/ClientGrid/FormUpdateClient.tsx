@@ -11,14 +11,24 @@ import { api } from '@/lib/api'
 import { useState } from 'react'
 import { Client } from '@prisma/client'
 import { Combobox } from '@/components/ui/Combobox'
+import TextArea from '@/components/ui/TextArea'
 
 const UpdateClientSchema = z.object({
-  name: z.string().optional(),
-  email: z.string().optional(),
-  phone: z.string().optional(),
+  name: z
+    .string()
+    .min(3, { message: 'Mínimo de 3 caracteres' })
+    .max(20, { message: 'Máximo de 20 caracteres' }),
+  email: z.string().email().min(10, { message: 'Email inválido' }),
+  phone: z
+    .string()
+    .min(10, { message: 'Telefone inválido' })
+    .max(15, { message: 'Telefone inválido' })
+    .transform((value) =>
+      value.replace(/\D/g, '').replace(/^(\d{2})(\d)/g, '($1) $2'),
+    ),
   address: z.string().optional(),
-  role: z.string().optional(),
-  office: z.string().optional(),
+  role: z.string().min(3, { message: 'Mínimo de 3 caracteres' }),
+  description: z.string().optional(),
   officeId: z.string().optional(),
 })
 
@@ -32,7 +42,12 @@ export function FormUpdateClient({ data }: Props) {
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const { register, handleSubmit, control } = useForm<UpdateClientData>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<UpdateClientData>({
     resolver: zodResolver(UpdateClientSchema),
   })
 
@@ -67,58 +82,107 @@ export function FormUpdateClient({ data }: Props) {
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
         buttonTitle="Editar"
+        closeButton
       >
+        <div className="flex flex-col items-start justify-center gap-1 pt-2">
+          <h1 className="px-6 text-xl font-bold text-white">
+            Formulário de Edição
+          </h1>
+          <p className="px-6 text-base font-normal text-neutral-400">
+            Edite informações de um cliente
+          </p>
+        </div>
+
         <form
-          className="flex flex-col items-center justify-start gap-3"
+          className="flex flex-col items-stretch justify-start gap-4 p-6"
           onSubmit={handleSubmit(handleUpdateClientSubmit)}
         >
-          <h1>Editar</h1>
-          <Input
+          <div className="flex w-full gap-4">
+            <Input
+              color="primary"
+              type="text"
+              placeholder="Nome"
+              className="w-full"
+              defaultValue={data.name ?? ''}
+              error={errors.name?.message}
+              {...register('name')}
+            />
+            <Input
+              color="primary"
+              type="email"
+              className="w-full"
+              placeholder="Email"
+              defaultValue={data.email ?? ''}
+              error={errors.email?.message}
+              {...register('email')}
+            />
+          </div>
+
+          <div className="flex w-full gap-4">
+            <Input
+              color="primary"
+              type="text"
+              placeholder="Telefone"
+              defaultValue={data.phone ?? ''}
+              error={errors.phone?.message}
+              {...register('phone')}
+            />
+            <Input
+              color="primary"
+              type="text"
+              placeholder="Endereço"
+              defaultValue={data.address ?? ''}
+              error={errors.address?.message}
+              {...register('address')}
+            />
+          </div>
+          <TextArea
             color="primary"
-            type="text"
-            placeholder="name"
-            defaultValue={data.name}
-            {...register('name')}
+            placeholder="Descrição sobre este cliente"
+            className="w-full p-3"
+            defaultValue={data.description ?? ''}
+            error={errors.description?.message}
+            {...register('description')}
           />
-          <Input
-            type="email"
-            color="primary"
-            placeholder="email"
-            defaultValue={data.email}
-            {...register('email')}
-          />
-          <Input
-            type="text"
-            color="primary"
-            placeholder="phone"
-            defaultValue={data.phone ?? ''}
-            {...register('phone')}
-          />
-          <Input
-            type="text"
-            color="primary"
-            placeholder="address"
-            defaultValue={data.address ?? ''}
-            {...register('address')}
-          />
-          <Input
-            type="text"
-            color="primary"
-            placeholder="role"
-            defaultValue={data.role ?? ''}
-            {...register('role')}
-          />
-          <Controller
-            control={control}
-            name="officeId"
-            defaultValue={data.officeId ?? ''}
-            render={({ field: { onChange } }) => (
-              <Combobox onValueChange={onChange} />
-            )}
-          />
-          <Button color="primary" type="submit">
-            ENVIA AI MANO
-          </Button>
+          <div className="flex w-full gap-4">
+            <Controller
+              control={control}
+              name="officeId"
+              render={({ field: { onChange } }) => (
+                <Combobox onValueChange={onChange} />
+              )}
+            />
+            <Input
+              color="primary"
+              type="text"
+              placeholder="Cargo"
+              className="w-full"
+              defaultValue={data.role ?? ''}
+              error={errors.role?.message}
+              {...register('role')}
+            />
+          </div>
+          {mutation.error ? (
+            <p className="mt-1 text-sm text-red-500">
+              {
+                (mutation.error as { response: { data: { error: string } } })
+                  .response.data.error
+              }
+            </p>
+          ) : null}
+          <div className="flex w-full items-center justify-end gap-2 pt-4">
+            <Button
+              color="neutral"
+              onClick={() => setIsModalOpen(false)}
+              className="z-50"
+              type="button"
+            >
+              Cancelar
+            </Button>
+            <Button color="primary" className="z-50" type="submit">
+              Adicionar Cliente
+            </Button>
+          </div>
         </form>
       </Modal>
     </>

@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
-  const { name, address, email, phone, role, roleAge, officeId } =
+  const { name, address, email, phone, role, roleAge, officeId, description } =
     (await req.json()) as TClientWithOffice
 
   try {
@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
         email,
         phone,
         address,
+        description,
         role,
         roleAge,
         officeId,

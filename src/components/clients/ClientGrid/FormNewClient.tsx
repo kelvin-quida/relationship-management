@@ -15,28 +15,19 @@ import TextArea from '@/components/ui/TextArea'
 const AddClientSchema = z.object({
   name: z
     .string()
-    .min(3, { message: 'Nome deve ter no mínimo 3 caracteres' })
-    .max(20, { message: 'Nome deve ter no máximo 20 caracteres' }),
+    .min(3, { message: 'Mínimo de 3 caracteres' })
+    .max(20, { message: 'Máximo de 20 caracteres' }),
   email: z.string().email().min(10, { message: 'Email inválido' }),
   phone: z
     .string()
     .min(10, { message: 'Telefone inválido' })
-    .max(11, { message: 'Telefone inválido' })
-    .transform(
-      (value) =>
-        '(' +
-        value.slice(0, 2) +
-        ') ' +
-        value.slice(2, 7) +
-        '-' +
-        value.slice(7, 11),
+    .max(15, { message: 'Telefone inválido' })
+    .transform((value) =>
+      value.replace(/\D/g, '').replace(/^(\d{2})(\d)/g, '($1) $2'),
     ),
   address: z.string().optional(),
   role: z.string().min(3, { message: 'Mínimo de 3 caracteres' }),
-  description: z
-    .string()
-    .min(10, { message: 'Mínimo de 10 caracteres' })
-    .max(300, { message: 'Máximo de 250 caracteres' }).optional(),
+  description: z.string().optional(),
   officeId: z.string().optional(),
 })
 
@@ -86,10 +77,11 @@ export function FormNewClient() {
     <>
       <Modal
         isOpen={isModalOpen}
+        closeButton
         onOpenChange={setIsModalOpen}
         buttonTitle="Adicionar Cliente"
       >
-        <div className="flex flex-col items-start justify-center gap-1">
+        <div className="flex flex-col items-start justify-center gap-1 pt-2">
           <h1 className="px-6 text-xl font-bold text-white">
             Formulário de Cadastro
           </h1>
@@ -106,42 +98,41 @@ export function FormNewClient() {
               color="primary"
               type="text"
               placeholder="Nome"
+              className="w-full"
               error={errors.name?.message}
               {...register('name')}
             />
             <Input
               color="primary"
               type="email"
+              className="w-full"
               placeholder="Email"
+              error={errors.email?.message}
               {...register('email')}
             />
           </div>
-          {mutation.error ? (
-            <p className="mt-1 text-sm text-red-500">
-              {
-                (mutation.error as { response: { data: { error: string } } })
-                  .response.data.error
-              }
-            </p>
-          ) : null}
+
           <div className="flex w-full gap-4">
             <Input
               color="primary"
               type="text"
               placeholder="Telefone"
+              error={errors.phone?.message}
               {...register('phone')}
             />
             <Input
               color="primary"
               type="text"
               placeholder="Endereço"
+              error={errors.address?.message}
               {...register('address')}
             />
           </div>
           <TextArea
             color="primary"
-            placeholder="Cargo"
+            placeholder="Descrição sobre este cliente"
             className="w-full p-3"
+            error={errors.description?.message}
             {...register('description')}
           />
           <div className="flex w-full gap-4">
@@ -157,9 +148,18 @@ export function FormNewClient() {
               type="text"
               placeholder="Cargo"
               className="w-full"
+              error={errors.role?.message}
               {...register('role')}
             />
           </div>
+          {mutation.error ? (
+            <p className="mt-1 text-sm text-red-500">
+              {
+                (mutation.error as { response: { data: { error: string } } })
+                  .response.data.error
+              }
+            </p>
+          ) : null}
           <div className="flex w-full items-center justify-end gap-2 pt-4">
             <Button
               color="neutral"
