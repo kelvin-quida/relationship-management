@@ -102,10 +102,10 @@ export function FormNewClientOffice({ officeId }: Props) {
         buttonTitle="Adicionar Cliente"
       >
         <div className="flex flex-col items-start justify-center gap-1 pt-2">
-          <h1 className="px-6 text-xl font-bold text-white">
+          <h1 className="px-6 text-xl font-bold dark:text-white">
             Formulário de Cadastro
           </h1>
-          <p className="px-6 text-base font-normal text-neutral-400">
+          <p className="px-6 text-base font-normal dark:text-neutral-400">
             Adicione um novo cliente
           </p>
         </div>
@@ -166,7 +166,7 @@ export function FormNewClientOffice({ officeId }: Props) {
             />
           </div>
           {mutation.error ? (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="mt-1 text-sm dark:text-red-500">
               {
                 (mutation.error as { response: { data: { error: string } } })
                   .response.data.error

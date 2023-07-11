@@ -63,7 +63,7 @@ export default function FormLogin() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-6 text-neutral-400"
+                className="block text-sm font-medium leading-6 dark:text-neutral-400"
               >
                 Email
               </label>
@@ -83,7 +83,7 @@ export default function FormLogin() {
             <div className="mt-2">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-6 text-neutral-400"
+                className="block text-sm font-medium leading-6 dark:text-neutral-400"
               >
                 Senha
               </label>

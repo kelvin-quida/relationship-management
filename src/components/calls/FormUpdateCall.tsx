@@ -81,10 +81,10 @@ export function FormUpdateCall({ data }: Props) {
         buttonTitle="Editar"
       >
         <div className="flex flex-col items-start justify-center gap-1 pt-2">
-          <h1 className="px-6 text-xl font-bold text-white">
+          <h1 className="px-6 text-xl font-bold dark:text-white">
             Formulário de Edição
           </h1>
-          <p className="px-6 text-base font-normal text-neutral-400">
+          <p className="px-6 text-base font-normal dark:text-neutral-400">
             Edite essa chamada
           </p>
         </div>
@@ -143,7 +143,7 @@ export function FormUpdateCall({ data }: Props) {
             />
           </div>
           {mutation.error ? (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="mt-1 text-sm dark:text-red-500">
               {
                 (mutation.error as { response: { data: { error: string } } })
                   .response.data.error

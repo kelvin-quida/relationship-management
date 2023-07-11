@@ -37,7 +37,7 @@ export default function BrowserOffice({ id }: Props) {
                 href={`https://${office?.website}`}
                 target="_blank"
                 color="neutral"
-                className="flex items-center justify-start gap-2 text-neutral-400"
+                className="flex items-center justify-start gap-2 dark:text-neutral-400"
               >
                 <GlobeAltIcon className="h-5 w-5" />
                 <p>{office?.website}</p>
@@ -48,7 +48,7 @@ export default function BrowserOffice({ id }: Props) {
               target="_blank"
               rel="noreferrer"
               color="neutral"
-              className="flex items-center justify-start gap-2 text-neutral-400"
+              className="flex items-center justify-start gap-2 dark:text-neutral-400"
             >
               <EnvelopeIcon className="h-5 w-5" />
               <p>{office?.email}</p>
@@ -58,7 +58,7 @@ export default function BrowserOffice({ id }: Props) {
               target="_blank"
               rel="noreferrer"
               color="neutral"
-              className="flex items-center justify-start gap-2 text-neutral-400"
+              className="flex items-center justify-start gap-2 dark:text-neutral-400"
             >
               <PhoneIcon className="h-5 w-5" />
               <p>{office?.phone}</p>
@@ -68,17 +68,17 @@ export default function BrowserOffice({ id }: Props) {
               color="neutral"
               rel="noreferrer"
               target="_blank"
-              className="flex items-center justify-start gap-2 text-neutral-400"
+              className="flex items-center justify-start gap-2 dark:text-neutral-400"
             >
               <MapPinIcon className="h-5 w-5" />
               <p>{office?.location}</p>
             </Anchor>
           </div>
         </div>
-        <div className="h-full w-1/3 rounded-lg border border-neutral-800 bg-background p-4">
+        <div className="h-full w-1/3 rounded-lg border dark:border-neutral-800 dark:bg-background p-4">
           <p
             title={office?.description ?? ''}
-            className="line-clamp-5 text-sm font-normal text-neutral-400"
+            className="line-clamp-5 text-sm font-normal dark:text-neutral-400"
           >
             {office?.description}
           </p>

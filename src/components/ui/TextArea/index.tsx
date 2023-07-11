@@ -32,7 +32,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, Props>(
           })}
         />
         {error && (
-          <p className="p-1 text-xs font-light text-red-500">{error}</p>
+          <p className="p-1 text-xs font-light dark:text-red-500">{error}</p>
         )}
       </div>
     )

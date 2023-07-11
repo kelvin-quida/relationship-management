@@ -179,12 +179,12 @@ export default function OfficeGrid() {
       <SliderModal />
 
       <Box className="relative h-full overflow-hidden">
-        <div className="z-50 flex w-full items-center justify-between bg-neutral-900 pb-6 pt-0 duration-150 ease-out">
+        <div className="z-50 flex w-full items-center justify-between dark:bg-neutral-900 pb-6 pt-0 duration-150 ease-out">
           {/* Dropdown Insert */}
           <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 dark:text-neutral-500">
               <svg
-                className="h-5 w-5 text-neutral-500 dark:text-neutral-400"
+                className="h-5 w-5 dark:text-neutral-500 dark:text-neutral-400"
                 aria-hidden="true"
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -216,7 +216,7 @@ export default function OfficeGrid() {
             <div className="flex items-center justify-end space-x-2 py-4">
               <Button
                 color="neutral"
-                className="flex h-10 w-10 items-center justify-center p-1.5 text-neutral-500 duration-150 ease-out hover:text-neutral-300"
+                className="flex h-10 w-10 items-center justify-center p-1.5 dark:text-neutral-500 duration-150 ease-out dark:hover:text-neutral-300"
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
               >
@@ -224,7 +224,7 @@ export default function OfficeGrid() {
               </Button>
               <Button
                 color="neutral"
-                className="flex h-10 w-10 items-center justify-center p-1.5 text-neutral-500 duration-150 ease-out hover:text-neutral-300"
+                className="flex h-10 w-10 items-center justify-center p-1.5 dark:text-neutral-500 duration-150 ease-out dark:hover:text-neutral-300"
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
               >
@@ -246,10 +246,10 @@ export default function OfficeGrid() {
             </ScrollArea.Viewport>
 
             <ScrollArea.Scrollbar
-              className="duration-[160ms] flex touch-none select-none rounded-full bg-neutral-900 transition-colors ease-out hover:bg-neutral-950 data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col"
+              className="duration-[160ms] flex touch-none select-none rounded-full dark:bg-neutral-900 transition-colors ease-out dark:hover:bg-neutral-950 data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col"
               orientation="vertical"
             >
-              <ScrollArea.Thumb className="relative flex-1 rounded-full bg-emerald-700 before:absolute before:left-1/2 before:top-1/2 before:h-10 before:min-h-[14px] before:w-full before:min-w-[44px] before:-translate-x-1/2 before:-translate-y-1/2 before:content-['']" />
+              <ScrollArea.Thumb className="relative flex-1 rounded-full dark:bg-emerald-700 before:absolute before:left-1/2 before:top-1/2 before:h-10 before:min-h-[14px] before:w-full before:min-w-[44px] before:-translate-x-1/2 before:-translate-y-1/2 before:content-['']" />
             </ScrollArea.Scrollbar>
             <ScrollArea.Corner />
           </ScrollArea.Root>
@@ -267,7 +267,7 @@ type TableProps = {
 const Table = ({ table, offices, onDelete }: TableProps) => {
   return (
     <>
-      <table className="h-full w-full text-sm text-neutral-400">
+      <table className="h-full w-full text-sm dark:text-neutral-400">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -326,7 +326,7 @@ const Table = ({ table, offices, onDelete }: TableProps) => {
                     <td
                       key={cell.id}
                       className={cn({
-                        'my-2 mr-10 flex cursor-pointer flex-col items-start justify-center gap-1 rounded-lg border border-transparent p-4 text-base font-semibold text-white duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800':
+                        'my-2 mr-10 flex cursor-pointer flex-col items-start justify-center gap-1 rounded-lg border border-transparent p-4 text-base font-semibold dark:text-white duration-150 ease-out hover:border-neutral-700 hover:bg-neutral-800':
                           cell.id.includes('name'),
                       })}
                     >
@@ -343,7 +343,7 @@ const Table = ({ table, offices, onDelete }: TableProps) => {
                         )}
                         {cell.id.includes('name') &&
                         offices?.[cell.row.index] ? (
-                          <p className="text-sm font-normal text-neutral-400">
+                          <p className="text-sm font-normal dark:text-neutral-400">
                             {offices?.[cell.row.index].email}
                           </p>
                         ) : null}

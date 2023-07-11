@@ -27,7 +27,7 @@ export default function SliderModal() {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-neutral-950/60 transition-opacity" />
+          <div className="fixed inset-0 dark:bg-neutral-950/60 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-hidden">
@@ -62,8 +62,8 @@ export default function SliderModal() {
                       </Button>
                     </div>
                   </Transition.Child>
-                  <div className="flex h-screen w-full flex-col overflow-auto rounded-l-3xl border border-neutral-800 bg-background p-4 py-6 pt-16 ">
-                    <div className="px-4 py-6 text-white sm:px-6">
+                  <div className="flex h-screen w-full flex-col overflow-auto rounded-l-3xl border dark:border-neutral-800 dark:bg-background p-4 py-6 pt-16 ">
+                    <div className="px-4 py-6 dark:text-white sm:px-6">
                       <div className="flex flex-col items-start justify-start gap-4">
                         <h1 className="text-6xl font-semibold">
                           {clientData?.name}
@@ -74,14 +74,14 @@ export default function SliderModal() {
                             href={`mailto:${clientData?.email}`}
                             target="_blank"
                             color="neutral"
-                            className="flex items-center justify-start gap-2 border-transparent bg-transparent pl-0 text-neutral-400 hover:pl-4"
+                            className="flex items-center justify-start gap-2 border-transparent bg-transparent pl-0 dark:text-neutral-400 hover:pl-4"
                           >
                             <EnvelopeIcon className="h-5 w-5" />
                             <p>{clientData?.email}</p>
                           </Anchor>
                           <Anchor
                             color="neutral"
-                            className="flex items-center justify-start gap-2 border-transparent bg-transparent text-neutral-400"
+                            className="flex items-center justify-start gap-2 border-transparent bg-transparent dark:text-neutral-400"
                           >
                             <PhoneIcon className="h-5 w-5" />
                             <p>{clientData?.phone}</p>
@@ -90,7 +90,7 @@ export default function SliderModal() {
                             color="neutral"
                             target="_blank"
                             href={`/offices/${clientData?.office?.id}`}
-                            className="flex items-center justify-start gap-2 border-transparent bg-transparent text-neutral-400"
+                            className="flex items-center justify-start gap-2 border-transparent bg-transparent dark:text-neutral-400"
                           >
                             <BuildingOfficeIcon className="h-5 w-5" />
                             <p className="select-none">
@@ -101,7 +101,7 @@ export default function SliderModal() {
                             <Anchor
                               target="_blank"
                               color="neutral"
-                              className="flex items-center justify-start gap-2 border-transparent bg-transparent text-neutral-400"
+                              className="flex items-center justify-start gap-2 border-transparent bg-transparent dark:text-neutral-400"
                             >
                               <UserIcon className="h-5 w-5" />
                               <p>{clientData?.role}</p>
@@ -110,7 +110,7 @@ export default function SliderModal() {
                         </div>
 
                         {clientData?.description && (
-                          <p className="mt-6 w-full max-w-2xl rounded-lg border border-transparent p-4 text-sm text-neutral-400 duration-150 ease-out hover:border-neutral-800 ">
+                          <p className="mt-6 w-full max-w-2xl rounded-lg border border-transparent p-4 text-sm dark:text-neutral-400 duration-150 ease-out dark:hover:border-neutral-800 ">
                             {clientData?.description}
                           </p>
                         )}
