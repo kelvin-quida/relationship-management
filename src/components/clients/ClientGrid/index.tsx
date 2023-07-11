@@ -333,7 +333,7 @@ const Table = ({ table, clients, onDelete }: TableProps) => {
                     <td
                       key={cell.id}
                       className={cn({
-                        'my-2 mr-10 flex cursor-pointer flex-col items-start justify-center gap-1 rounded-lg border border-transparent p-4 text-base font-semibold dark:text-white duration-150 ease-out dark:hover:border-neutral-700 dark:hover:bg-neutral-800':
+                        'my-2 mr-10 flex cursor-pointer flex-col items-start justify-center gap-1 rounded-lg border border-transparent p-4 text-base font-semibold dark:text-white duration-150 ease-out text-neutral-800 hover:border-neutral-300 hover:bg-neutral-200 dark:hover:border-neutral-700 dark:hover:bg-neutral-800':
                           cell.id.includes('name'),
                       })}
                       onClick={() => {
