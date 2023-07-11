@@ -1,4 +1,4 @@
-import CallGrid from '@/components/callsaa/CallGrid'
+import CallGrid from '@/components/calls/CallGrid'
 
 export default async function Call() {
   return (

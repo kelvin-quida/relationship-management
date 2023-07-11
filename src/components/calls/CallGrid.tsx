@@ -1,7 +1,6 @@
 'use client'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { parseCookies } from 'nookies'
-import SliderModal from '@/components/ui/SliderModal'
 import Box from '@/components/ui/Box'
 import Input from '@/components/ui/Input'
 import * as ScrollArea from '@radix-ui/react-scroll-area'
@@ -28,21 +27,13 @@ import {
   ChevronUpIcon,
 } from '@heroicons/react/24/solid'
 import { cn } from '@/lib/utils'
-import { getOffices } from '@/queries/getOffices'
-import { TOfficeWithClient } from '@/types'
-import { FormNewOffice } from './FormNewOffice'
-import { FormUpdateOffice } from './FormUpdateOffice'
 import Link from 'next/link'
+import { getCalls } from '@/queries/getCalls'
+import { HistoryCall } from '@prisma/client'
+import { FormNewCall } from './FormNewCall'
+import { FormUpdateCall } from './FormUpdateCall'
 
-type Office = {
-  id: string
-  name: string
-  phone: string | null
-  location: string | null
-  website: string | null
-}
-
-const columns: ColumnDef<Office>[] = [
+const columns: ColumnDef<HistoryCall>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => {
@@ -60,6 +51,28 @@ const columns: ColumnDef<Office>[] = [
         </Button>
       )
     },
+  },
+  {
+    accessorKey: 'office',
+    header: ({ column }) => {
+      return (
+        <Button
+          color="none"
+          className="flex items-center justify-center gap-2 p-0"
+          onClick={column.getToggleSortingHandler()}
+        >
+          Escritório {/* getIsSorted retorna false | 'asc' | 'desc' */}
+          {{
+            asc: <ChevronDownIcon className="h-4 w-4" />,
+            desc: <ChevronUpIcon className="h-4 w-4" />,
+          }[column.getIsSorted() as string] ?? null}
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: 'description',
+    header: 'Descrição',
   },
   {
     accessorKey: 'phone',
@@ -80,11 +93,7 @@ const columns: ColumnDef<Office>[] = [
     },
   },
   {
-    accessorKey: 'website',
-    header: 'Website',
-  },
-  {
-    accessorKey: 'location',
+    accessorKey: 'date',
     header: ({ column }) => {
       return (
         <Button
@@ -92,7 +101,7 @@ const columns: ColumnDef<Office>[] = [
           className="flex items-center justify-center gap-2 p-0"
           onClick={column.getToggleSortingHandler()}
         >
-          Localização {/* getIsSorted retorna false | 'asc' | 'desc' */}
+          Data {/* getIsSorted retorna false | 'asc' | 'desc' */}
           {{
             asc: <ChevronDownIcon className="h-4 w-4" />,
             desc: <ChevronUpIcon className="h-4 w-4" />,
@@ -108,18 +117,18 @@ const columns: ColumnDef<Office>[] = [
   },
 ]
 
-export default function OfficeGrid() {
-  const queryOffice = useQueryClient()
+export default function CallGrid() {
+  const queryCall = useQueryClient()
 
-  const { data: offices } = useQuery({
-    queryKey: ['offices'],
-    queryFn: getOffices,
+  const { data: calls } = useQuery({
+    queryKey: ['calls'],
+    queryFn: getCalls,
   })
 
   async function handleRemoveOffice(id: string) {
     const { token } = parseCookies()
 
-    await api.delete(`office/delete?id=${id}`, {
+    await api.delete(`historycall/delete?id=${id}`, {
       headers: {
         Authorization: `${token}`,
       },
@@ -129,38 +138,39 @@ export default function OfficeGrid() {
   const mutation = useMutation({
     mutationFn: handleRemoveOffice,
     onMutate: async (officeID) => {
-      await queryOffice.cancelQueries({ queryKey: ['offices'] })
-      const previousoffices = queryOffice.getQueryData(['offices'])
+      await queryCall.cancelQueries({ queryKey: ['calls'] })
+      const previouscalls = queryCall.getQueryData(['calls'])
 
-      queryOffice.setQueryData<TOfficeWithClient[]>(['offices'], (old) => {
+      queryCall.setQueryData<HistoryCall[]>(['calls'], (old) => {
         return old?.filter(({ id }) => id !== officeID)
       })
 
-      return { previousoffices }
+      return { previouscalls }
     },
     onError: (_err, _deleteoffices, context) => {
-      queryOffice.setQueryData(['offices'], context?.previousoffices)
+      queryCall.setQueryData(['calls'], context?.previouscalls)
     },
     onSettled: () => {
-      queryOffice.invalidateQueries(['offices'])
+      queryCall.invalidateQueries(['calls'])
     },
   })
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [sorting, setSorting] = useState<SortingState>([])
 
-  const officesTableData = useMemo(() => {
-    return (offices ?? []).map((office) => ({
-      id: office.id,
-      name: office.name,
-      phone: office.phone,
-      website: office.website,
-      location: office.location,
+  const callsTableData = useMemo(() => {
+    return (calls ?? []).map((call) => ({
+      id: call.id,
+      name: call.name,
+      office: call.office,
+      phone: call.phone,
+      description: call.description,
+      date: call.date,
     }))
-  }, [offices])
+  }, [calls])
 
   const table = useReactTable({
-    data: officesTableData,
+    data: callsTableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -176,8 +186,6 @@ export default function OfficeGrid() {
 
   return (
     <>
-      <SliderModal />
-
       <Box className="relative h-full overflow-hidden">
         <div className="z-50 flex w-full items-center justify-between bg-neutral-900 pb-6 pt-0 duration-150 ease-out">
           {/* Dropdown Insert */}
@@ -201,7 +209,7 @@ export default function OfficeGrid() {
               color="primary"
               type="text"
               id="table-search"
-              placeholder="Buscar Escritório"
+              placeholder="Buscar Chamada"
               className="pl-10"
               value={
                 (table.getColumn('name')?.getFilterValue() as string) ?? ''
@@ -212,7 +220,7 @@ export default function OfficeGrid() {
             />
           </div>
           <div className="flex items-center justify-end gap-4">
-            <FormNewOffice />
+            <FormNewCall />
             <div className="flex items-center justify-end space-x-2 py-4">
               <Button
                 color="neutral"
@@ -238,10 +246,8 @@ export default function OfficeGrid() {
             <ScrollArea.Viewport className="h-full w-full pb-10">
               <Table
                 table={table}
-                offices={offices}
-                onDelete={(index) =>
-                  mutation.mutate(officesTableData[index].id)
-                }
+                calls={calls}
+                onDelete={(index) => mutation.mutate(callsTableData[index].id)}
               />
             </ScrollArea.Viewport>
 
@@ -260,11 +266,11 @@ export default function OfficeGrid() {
 }
 
 type TableProps = {
-  table: TTable<Office>
-  offices?: TOfficeWithClient[]
+  table: TTable<HistoryCall>
+  calls?: HistoryCall[]
   onDelete: (index: number) => void
 }
-const Table = ({ table, offices, onDelete }: TableProps) => {
+const Table = ({ table, calls, onDelete }: TableProps) => {
   return (
     <>
       <table className="h-full w-full text-sm text-neutral-400">
@@ -305,12 +311,12 @@ const Table = ({ table, offices, onDelete }: TableProps) => {
                   if (cell.id.includes('actions')) {
                     return (
                       <td key={cell.id} className="flex gap-2">
-                        {offices?.[cell.row.index] && (
-                          <FormUpdateOffice data={offices[cell.row.index]} />
+                        {calls?.[cell.row.index] && (
+                          <FormUpdateCall data={calls[cell.row.index]} />
                         )}
                         <DeleteModal
-                          title="Remover escritório"
-                          description="Tem certeza que deseja remover o escritório?"
+                          title="Remover chamada"
+                          description="Tem certeza que deseja remover o chamada?"
                         >
                           <Button
                             onClick={() => onDelete(cell.row.index)}
@@ -333,7 +339,7 @@ const Table = ({ table, offices, onDelete }: TableProps) => {
                       <Link
                         href={
                           cell.id.includes('name')
-                            ? `/offices/${offices?.[cell.row.index].id}`
+                            ? `/calls/${calls?.[cell.row.index].id}`
                             : '#'
                         }
                       >
@@ -341,10 +347,9 @@ const Table = ({ table, offices, onDelete }: TableProps) => {
                           cell.column.columnDef.cell,
                           cell.getContext(),
                         )}
-                        {cell.id.includes('name') &&
-                        offices?.[cell.row.index] ? (
+                        {cell.id.includes('name') && calls?.[cell.row.index] ? (
                           <p className="text-sm font-normal text-neutral-400">
-                            {offices?.[cell.row.index].email}
+                            {calls?.[cell.row.index].phone}
                           </p>
                         ) : null}
                       </Link>

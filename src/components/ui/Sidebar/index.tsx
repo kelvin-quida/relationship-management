@@ -4,12 +4,12 @@ import {
   BuildingOfficeIcon,
   RectangleStackIcon,
   UserGroupIcon,
+  PhoneIcon,
 } from '@heroicons/react/24/solid'
 import { usePathname, useRouter } from 'next/navigation'
 import NavLink from '../NavLink'
 import { ReactNode } from 'react'
 import { destroyCookie } from 'nookies'
-import { PhoneIcon } from '@heroicons/react/24/outline'
 
 type TNavMenu = {
   name: string
