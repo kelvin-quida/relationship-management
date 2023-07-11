@@ -169,7 +169,7 @@ export function FormUpdateOffice({ data }: Props) {
               Cancelar
             </Button>
             <Button color="primary" className="z-50" type="submit">
-              Adicionar Cliente
+              Editar Escritório
             </Button>
           </div>
         </form>

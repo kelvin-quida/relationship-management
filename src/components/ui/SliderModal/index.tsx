@@ -66,7 +66,7 @@ export default function SliderModal() {
                     <div className="px-4 py-6 text-white sm:px-6">
                       <div className="flex flex-col items-start justify-start gap-4">
                         <h1 className="text-6xl font-semibold">
-                          Daniel Gabriel
+                          {clientData?.name}
                         </h1>
                         <div className="flex items-center justify-start gap-3">
                           <Anchor

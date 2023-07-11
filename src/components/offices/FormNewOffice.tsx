@@ -160,7 +160,7 @@ export function FormNewOffice() {
               Cancelar
             </Button>
             <Button color="primary" className="z-50" type="submit">
-              Adicionar Cliente
+              Adicionar Escritório
             </Button>
           </div>
         </form>

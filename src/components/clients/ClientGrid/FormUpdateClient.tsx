@@ -180,7 +180,7 @@ export function FormUpdateClient({ data }: Props) {
               Cancelar
             </Button>
             <Button color="primary" className="z-50" type="submit">
-              Adicionar Cliente
+              Editar Client
             </Button>
           </div>
         </form>
