@@ -19,7 +19,7 @@ export type TGift = Prisma.GiftGetPayload<{
   }
 }>
 
-export type THistoryCall = Prisma.His
+export type THistoryCall = Prisma.HistoryCallGetPayload<{}>
 
 export type TUser = {
   id: string
