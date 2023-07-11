@@ -82,10 +82,10 @@ export function FormNewClient() {
         buttonTitle="Adicionar Cliente"
       >
         <div className="flex flex-col items-start justify-center gap-1 pt-2">
-          <h1 className="px-6 text-xl font-bold text-white">
+          <h1 className="px-6 text-xl font-bold text-neutral-900 dark:text-white">
             Formulário de Cadastro
           </h1>
-          <p className="px-6 text-base font-normal text-neutral-400">
+          <p className="px-6 text-base font-normal text-neutral-600 dark:text-neutral-400">
             Adicione um novo cliente
           </p>
         </div>

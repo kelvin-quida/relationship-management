@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <QueryProvider>
         <body
-          className={`${inter.className} selection:bg-emerald-500 selection:text-neutral-950`}
+          className={`${inter.className} selection:bg-emerald-500 text-neutral-900 dark:text-neutral-100 selection:text-neutral-950`}
         ><ThemeProviderWrapper>
           {children}
         </ThemeProviderWrapper>

@@ -27,7 +27,7 @@ export default function SliderModal() {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 dark:bg-neutral-950/60 transition-opacity" />
+          <div className="fixed inset-0 bg-neutral-100/70 dark:bg-neutral-950/60 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-hidden">
@@ -62,7 +62,7 @@ export default function SliderModal() {
                       </Button>
                     </div>
                   </Transition.Child>
-                  <div className="flex h-screen w-full flex-col overflow-auto rounded-l-3xl border dark:border-neutral-800 dark:bg-background p-4 py-6 pt-16 ">
+                  <div className="flex h-screen w-full flex-col overflow-auto rounded-l-3xl border dark:border-neutral-800 bg-neutral-100 dark:bg-background p-4 py-6 pt-16 ">
                     <div className="px-4 py-6 dark:text-white sm:px-6">
                       <div className="flex flex-col items-start justify-start gap-4">
                         <h1 className="text-6xl font-semibold">

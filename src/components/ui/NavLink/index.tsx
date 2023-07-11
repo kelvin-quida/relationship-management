@@ -63,10 +63,10 @@ export default function NavLink({
 
       {title && (<div
         className={`${
-          color === 'warn' ? 'dark:border-red-500 dark:bg-red-950' : 'dark:border-emerald-500'
+          color === 'warn' ? 'border-rose-500 bg-rose-700 text-white dark:border-red-500 dark:bg-red-950' : 'dark:border-emerald-500'
         } ${
           isHovered === true && 'translate-x-[0px] opacity-100'
-        } pointer-events-none absolute left-[70px] top-[20%] -z-10 translate-x-[-100px] rounded-md border bg-neutral-800 px-3 py-2  text-xs dark:text-white opacity-0 shadow-md dark:shadow-black/10 duration-150 ease-out`}
+        } pointer-events-none absolute left-[70px] top-[20%] -z-10 translate-x-[-100px] rounded-md border dark:bg-neutral-800 px-3 py-2  text-xs text-neutral-900 bg-neutral-100 border-neutral-200 dark:text-white opacity-0 shadow-md dark:shadow-black/10 duration-150 ease-out`}
       >
         {title}
       </div>)}
