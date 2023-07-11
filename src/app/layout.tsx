@@ -17,7 +17,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="manifest" href="/manifest.json" />
       </head>
       <QueryProvider>
-        <body className={inter.className}>{children}</body>
+        <body
+          className={`${inter.className} selection:bg-emerald-500 selection:text-neutral-950`}
+        >
+          {children}
+        </body>
       </QueryProvider>
     </html>
   )

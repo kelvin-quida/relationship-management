@@ -5,6 +5,7 @@ import SliderModal from '@/components/ui/SliderModal'
 import getQueryClient from '@/lib/queryClient'
 import { getClients } from '@/queries/getClients'
 import { Hydrate, dehydrate } from '@tanstack/react-query'
+import { AlertTriangleIcon } from 'lucide-react'
 
 export default async function Client() {
   const queryClient = getQueryClient()
@@ -20,7 +21,10 @@ export default async function Client() {
             <Box className="h-[600px] w-full">
               <Calendar initialDateString="2023-07-05" />
             </Box>
-            <Box className=" h-full w-full">teste</Box>
+            <Box className=" flex h-full w-full items-center justify-center text-neutral-600">
+              <AlertTriangleIcon className="mr-2 h-4 w-4" />
+              Em Desenvolvimento
+            </Box>
           </div>
         </div>
         <SliderModal />

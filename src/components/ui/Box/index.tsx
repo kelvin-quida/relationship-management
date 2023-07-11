@@ -3,7 +3,7 @@ import { tv } from 'tailwind-variants'
 
 type Props = {
   className?: string
-  children: ReactNode
+  children?: ReactNode
 }
 
 const box = tv({

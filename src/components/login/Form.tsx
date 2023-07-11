@@ -5,10 +5,14 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { setCookie } from 'nookies'
 import { api } from '@/lib/api'
+import Input from '../ui/Input'
+import Button from '../ui/Button'
 
 const FormSchema = z.object({
-  email: z.string().email({ message: 'Email invalido!' }),
-  password: z.string().min(3, { message: 'Deve ter pelo menos 5 caracteres!' }),
+  email: z.string().email({ message: 'Email invalido!' }).min(10, {
+    message: 'Email deve ter pelo menos 10 caracteres!',
+  }),
+  password: z.string().min(3, { message: 'Deve ter pelo menos 3 caracteres!' }),
 })
 
 type LoginFormData = z.infer<typeof FormSchema>
@@ -17,7 +21,8 @@ export default function FormLogin() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(FormSchema),
   })
@@ -38,16 +43,16 @@ export default function FormLogin() {
         return router.push('/clients')
       }
     } catch (error) {
-      // console.log(error.response.data.error)
+      setError('email', {
+        type: 'manual',
+        message: 'Email ou senha incorreto!',
+      })
     }
   }
 
   return (
     <>
-      <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        {/* <div>
-        <h1 className="text-center text-4xl  font-bold">Login</h1>
-      </div> */}
+      <div className="flex h-max w-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form
             onSubmit={handleSubmit(FormSubmit)}
@@ -58,72 +63,52 @@ export default function FormLogin() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-neutral-400"
               >
                 Email
               </label>
               <div className="mt-2">
-                <input
+                <Input
+                  color="primary"
                   id="email"
                   {...register('email')}
                   type="email"
                   autoComplete="email"
                   required
-                  className={`block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6 ${
-                    errors.email ? 'border-red-500' : ''
-                  }`}
+                  error={errors.email?.message}
                 />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.email.message}
-                  </p>
-                )}
               </div>
             </div>
 
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-white"
-                >
-                  Senha
-                </label>
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-orange-600 hover:text-orange-500"
-                  >
-                    Esqueceu sua senha?
-                  </a>
-                </div>
-              </div>
+            <div className="mt-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-6 text-neutral-400"
+              >
+                Senha
+              </label>
               <div className="mt-2">
-                <input
+                <Input
+                  color="primary"
                   id="password"
                   {...register('password')}
                   type="password"
                   autoComplete="current-password"
                   required
-                  className={`block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6${
-                    errors.password ? 'border-red-500' : ''
-                  }`}
+                  error={errors.password?.message}
                 />
-                {errors.password && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.password.message}
-                  </p>
-                )}
               </div>
             </div>
 
             <div>
-              <button
+              <Button
+                color="primary"
+                disabled={isSubmitting}
+                className="w-full disabled:opacity-25"
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-orange-600 p-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
               >
-                Sign in
-              </button>
+                {isSubmitting ? 'Entrando...' : 'Entrar'}
+              </Button>
             </div>
           </form>
         </div>

@@ -4,10 +4,16 @@ import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useDataContext } from '@/context/MainContext'
 import Button from '../Button'
+import Anchor from '../Anchor'
+import {
+  BuildingOfficeIcon,
+  EnvelopeIcon,
+  PhoneIcon,
+  UserIcon,
+} from '@heroicons/react/24/outline'
 
 export default function SliderModal() {
-  const { isDialogOpen, closeDialog, officeData, openDialog, clientData } =
-    useDataContext()
+  const { isDialogOpen, closeDialog, openDialog, clientData } = useDataContext()
 
   return (
     <Transition.Root show={isDialogOpen} as={Fragment}>
@@ -57,17 +63,58 @@ export default function SliderModal() {
                     </div>
                   </Transition.Child>
                   <div className="flex h-screen w-full flex-col overflow-auto rounded-l-3xl border border-neutral-800 bg-background p-4 py-6 pt-16 ">
-                    <div className="px-4 text-white sm:px-6">
-                      <p>
-                        {' '}
-                        {clientData ? (
-                          <p className="text-white">
-                            {JSON.stringify(clientData)}
+                    <div className="px-4 py-6 text-white sm:px-6">
+                      <div className="flex flex-col items-start justify-start gap-4">
+                        <h1 className="text-6xl font-semibold">
+                          Daniel Gabriel
+                        </h1>
+                        <div className="flex items-center justify-start gap-3">
+                          <Anchor
+                            draggable={false}
+                            href={`mailto:${clientData?.email}`}
+                            target="_blank"
+                            color="neutral"
+                            className="flex items-center justify-start gap-2 border-transparent bg-transparent pl-0 text-neutral-400 hover:pl-4"
+                          >
+                            <EnvelopeIcon className="h-5 w-5" />
+                            <p>{clientData?.email}</p>
+                          </Anchor>
+                          <Anchor
+                            color="neutral"
+                            className="flex items-center justify-start gap-2 border-transparent bg-transparent text-neutral-400"
+                          >
+                            <PhoneIcon className="h-5 w-5" />
+                            <p>{clientData?.phone}</p>
+                          </Anchor>
+                          <Anchor
+                            color="neutral"
+                            target="_blank"
+                            href={`/offices/${clientData?.office?.id}`}
+                            className="flex items-center justify-start gap-2 border-transparent bg-transparent text-neutral-400"
+                          >
+                            <BuildingOfficeIcon className="h-5 w-5" />
+                            <p className="select-none">
+                              {clientData?.office?.name ?? 'Sem Empresa'}
+                            </p>
+                          </Anchor>
+                          {clientData?.role && (
+                            <Anchor
+                              target="_blank"
+                              color="neutral"
+                              className="flex items-center justify-start gap-2 border-transparent bg-transparent text-neutral-400"
+                            >
+                              <UserIcon className="h-5 w-5" />
+                              <p>{clientData?.role}</p>
+                            </Anchor>
+                          )}
+                        </div>
+
+                        {clientData?.description && (
+                          <p className="mt-6 w-full max-w-2xl rounded-lg border border-transparent p-4 text-sm text-neutral-400 duration-150 ease-out hover:border-neutral-800 ">
+                            {clientData?.description}
                           </p>
-                        ) : (
-                          <p>{JSON.stringify(officeData)}</p>
                         )}
-                      </p>
+                      </div>
                     </div>
                   </div>
                 </Dialog.Panel>

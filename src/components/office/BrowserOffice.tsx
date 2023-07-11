@@ -32,15 +32,17 @@ export default function BrowserOffice({ id }: Props) {
           </h1>
 
           <div className="flex items-center justify-start gap-3">
-            <Anchor
-              href={`https://${office?.website}`}
-              target="_blank"
-              color="neutral"
-              className="flex items-center justify-start gap-2 text-neutral-400"
-            >
-              <GlobeAltIcon className="h-5 w-5" />
-              <p>{office?.website}</p>
-            </Anchor>
+            {office?.website && (
+              <Anchor
+                href={`https://${office?.website}`}
+                target="_blank"
+                color="neutral"
+                className="flex items-center justify-start gap-2 text-neutral-400"
+              >
+                <GlobeAltIcon className="h-5 w-5" />
+                <p>{office?.website}</p>
+              </Anchor>
+            )}
             <Anchor
               href={`mailto:${office?.email}`}
               target="_blank"
