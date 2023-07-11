@@ -7,7 +7,7 @@ type Props = {
 }
 
 const box = tv({
-  base: 'group h-max w-full rounded-xl border border-neutral-800 bg-neutral-900 p-6',
+  base: 'dark:border-neutral-800 dark:bg-neutral-900 group h-max w-full rounded-xl border border-neutral-200 bg-neutral-100 p-6',
   variants: {},
 })
 
