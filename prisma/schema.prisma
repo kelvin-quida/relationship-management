@@ -73,3 +73,12 @@ model Gift {
 
   @@index([officeId])
 }
+
+model CallHistory {
+  id String @id @default(uuid())
+  name String
+  office String
+  phone String
+  description String
+  date String
+}
