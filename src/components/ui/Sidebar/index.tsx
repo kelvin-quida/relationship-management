@@ -2,7 +2,6 @@
 import {
   ArrowLeftOnRectangleIcon,
   BuildingOfficeIcon,
-  CalendarIcon,
   RectangleStackIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/solid'
@@ -10,6 +9,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import NavLink from '../NavLink'
 import { ReactNode } from 'react'
 import { destroyCookie } from 'nookies'
+import { PhoneIcon } from '@heroicons/react/24/outline'
 
 type TNavMenu = {
   name: string
@@ -28,10 +28,15 @@ const navigation = [
     href: '/offices',
     icon: <BuildingOfficeIcon className="h-6 w-6" />,
   },
+  // {
+  //   name: 'Calendário',
+  //   href: '/calendar',
+  //   icon: <CalendarIcon className="h-6 w-6" />,
+  // },
   {
-    name: 'Calendário',
-    href: '/calendar',
-    icon: <CalendarIcon className="h-6 w-6" />,
+    name: 'Chamadas',
+    href: '/calls',
+    icon: <PhoneIcon className="h-6 w-6" />,
   },
 ] as TNavMenu[]
 

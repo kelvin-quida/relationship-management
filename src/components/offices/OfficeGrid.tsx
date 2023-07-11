@@ -201,7 +201,7 @@ export default function OfficeGrid() {
               color="primary"
               type="text"
               id="table-search"
-              placeholder="Buscar officee"
+              placeholder="Buscar Escritório"
               className="pl-10"
               value={
                 (table.getColumn('name')?.getFilterValue() as string) ?? ''
