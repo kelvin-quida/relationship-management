@@ -1,5 +1,5 @@
 'use client'
-import { getClients } from '@/queries/getClients'
+import { getClients, getClientsOffice } from '@/queries/getClients'
 import { TClientWithOffice } from '@/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { parseCookies } from 'nookies'
@@ -115,12 +115,10 @@ const columns: ColumnDef<Client>[] = [
 export default function ClientOffice({ id }: Props) {
   const queryClient = useQueryClient()
 
-  const { data } = useQuery({
-    queryKey: ['clients'],
-    queryFn: getClients,
+  const { data: clients } = useQuery({
+    queryKey: ['clients', id],
+    queryFn: ({ queryKey }) => getClientsOffice(queryKey[1]),
   })
-
-  const clients = data?.filter((client) => client.office?.id === id)
 
   async function handleRemoveClient(id: string) {
     const { token } = parseCookies()
