@@ -10,12 +10,18 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Input from '@/components/ui/Input'
 import { api } from '@/lib/api'
 import { Combobox } from '@/components/ui/Combobox'
+import TextArea from '@/components/ui/TextArea'
 
 const AddClientSchema = z.object({
-  name: z.string().optional(),
-  email: z.string().email().optional(),
+  name: z
+    .string()
+    .min(3, { message: 'Nome deve ter no mínimo 3 caracteres' })
+    .max(20, { message: 'Nome deve ter no máximo 20 caracteres' }),
+  email: z.string().email().min(10, { message: 'Email inválido' }),
   phone: z
     .string()
+    .min(10, { message: 'Telefone inválido' })
+    .max(11, { message: 'Telefone inválido' })
     .transform(
       (value) =>
         '(' +
@@ -26,8 +32,11 @@ const AddClientSchema = z.object({
         value.slice(7, 11),
     ),
   address: z.string().optional(),
-  role: z.string().optional(),
-  office: z.string().optional(),
+  role: z.string().min(3, { message: 'Mínimo de 3 caracteres' }),
+  description: z
+    .string()
+    .min(10, { message: 'Mínimo de 10 caracteres' })
+    .max(300, { message: 'Máximo de 250 caracteres' }).optional(),
   officeId: z.string().optional(),
 })
 
@@ -36,7 +45,12 @@ type AddClientData = z.infer<typeof AddClientSchema>
 export function FormNewClient() {
   const queryClient = useQueryClient()
 
-  const { register, handleSubmit, control } = useForm<AddClientData>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<AddClientData>({
     resolver: zodResolver(AddClientSchema),
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -75,23 +89,33 @@ export function FormNewClient() {
         onOpenChange={setIsModalOpen}
         buttonTitle="Adicionar Cliente"
       >
+        <div className="flex flex-col items-start justify-center gap-1">
+          <h1 className="px-6 text-xl font-bold text-white">
+            Formulário de Cadastro
+          </h1>
+          <p className="px-6 text-base font-normal text-neutral-400">
+            Adicione um novo cliente
+          </p>
+        </div>
         <form
-          className="flex flex-col items-center justify-start gap-3"
+          className="flex flex-col items-stretch justify-start gap-4 p-6"
           onSubmit={handleSubmit(handleAddClientSubmit)}
         >
-          <h1 className="text-white">New Client</h1>
-          <Input
-            color="primary"
-            type="text"
-            placeholder="Nome"
-            {...register('name')}
-          />
-          <Input
-            color="primary"
-            type="email"
-            placeholder="Email"
-            {...register('email')}
-          />
+          <div className="flex w-full gap-4">
+            <Input
+              color="primary"
+              type="text"
+              placeholder="Nome"
+              error={errors.name?.message}
+              {...register('name')}
+            />
+            <Input
+              color="primary"
+              type="email"
+              placeholder="Email"
+              {...register('email')}
+            />
+          </div>
           {mutation.error ? (
             <p className="mt-1 text-sm text-red-500">
               {
@@ -100,34 +124,55 @@ export function FormNewClient() {
               }
             </p>
           ) : null}
-          <Input
+          <div className="flex w-full gap-4">
+            <Input
+              color="primary"
+              type="text"
+              placeholder="Telefone"
+              {...register('phone')}
+            />
+            <Input
+              color="primary"
+              type="text"
+              placeholder="Endereço"
+              {...register('address')}
+            />
+          </div>
+          <TextArea
             color="primary"
-            type="text"
-            placeholder="Telefone"
-            {...register('phone')}
-          />
-          <Input
-            color="primary"
-            type="text"
-            placeholder="Endereço"
-            {...register('address')}
-          />
-          <Input
-            color="primary"
-            type="text"
             placeholder="Cargo"
-            {...register('role')}
+            className="w-full p-3"
+            {...register('description')}
           />
-          <Controller
-            control={control}
-            name="officeId"
-            render={({ field: { onChange } }) => (
-              <Combobox onValueChange={onChange} />
-            )}
-          />
-          <Button color="primary" className="z-50" type="submit">
-            Enviar
-          </Button>
+          <div className="flex w-full gap-4">
+            <Controller
+              control={control}
+              name="officeId"
+              render={({ field: { onChange } }) => (
+                <Combobox onValueChange={onChange} />
+              )}
+            />
+            <Input
+              color="primary"
+              type="text"
+              placeholder="Cargo"
+              className="w-full"
+              {...register('role')}
+            />
+          </div>
+          <div className="flex w-full items-center justify-end gap-2 pt-4">
+            <Button
+              color="neutral"
+              onClick={() => setIsModalOpen(false)}
+              className="z-50"
+              type="button"
+            >
+              Cancelar
+            </Button>
+            <Button color="primary" className="z-50" type="submit">
+              Adicionar Cliente
+            </Button>
+          </div>
         </form>
       </Modal>
     </>

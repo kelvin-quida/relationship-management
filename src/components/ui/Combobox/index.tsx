@@ -37,30 +37,33 @@ export function Combobox({ onValueChange }: Props) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          //   variant="outline"
-
           color="neutral"
+          className="flex w-full items-center justify-start border  border-neutral-700/50 bg-neutral-800/50 capitalize text-neutral-200 placeholder:text-neutral-500 focus:border-emerald-500 focus:ring-emerald-500"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
         >
-          {value
-            ? offices?.find((office) => office.id === value)?.name
-            : 'Selecione um escritório'}
-          {/* <Chevron className="ml-2 h-4 w-4 shrink-0 opacity-50" /> */}
+          {value || (
+            <span className="text-neutral-500">Selecione um escritório</span>
+          )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Search framework..." />
-          <CommandEmpty>Nenhum escritório encontrado</CommandEmpty>
+      <PopoverContent className="mt-2 w-[--radix-popover-trigger-width] p-0">
+        <Command className="w-full">
+          <CommandInput
+            className="my-1.5 w-full border-none focus:ring-emerald-500"
+            placeholder="Procure pelo nome..."
+          />
+          <CommandEmpty>Nenhuma empresa encontrado</CommandEmpty>
           <CommandGroup>
             {offices?.map((office) => (
               <CommandItem
                 key={office.id}
-                value={office.id}
+                value={office.name}
                 onSelect={(currentValue) => {
-                  onValueChange(currentValue === value ? '' : currentValue)
+                  onValueChange(
+                    offices.find((office) => office.name === currentValue)
+                      ?.id ?? '',
+                  )
                   setValue(currentValue === value ? '' : currentValue)
                   setOpen(false)
                 }}

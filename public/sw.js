@@ -67,7 +67,11 @@ if (!self.define) {
     });
   };
 }
+<<<<<<< HEAD
 define(['./workbox-3576cac3'], (function (workbox) { 'use strict';
+=======
+define(['./workbox-e34f44db'], (function (workbox) { 'use strict';
+>>>>>>> ce4c2ed (add new form client)
 
   importScripts();
   self.skipWaiting();

@@ -4,6 +4,7 @@ import { tv } from 'tailwind-variants'
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   className?: string
   color: 'primary'
+  error?: string
 }
 
 const input = tv({
@@ -20,16 +21,21 @@ const input = tv({
 })
 
 const Input = forwardRef<HTMLInputElement, Props>(
-  ({ className, color, ...rest }, ref) => {
+  ({ className, color, error, ...rest }, ref) => {
     return (
-      <input
-        {...rest}
-        ref={ref}
-        className={input({
-          color,
-          className,
-        })}
-      />
+      <div className="flex flex-col items-start justify-start gap-1">
+        <input
+          {...rest}
+          ref={ref}
+          className={input({
+            color,
+            className,
+          })}
+        />
+        {error && (
+          <p className="p-1 text-xs font-light text-red-500">{error}</p>
+        )}
+      </div>
     )
   },
 )
