@@ -74,7 +74,7 @@ model Gift {
   @@index([officeId])
 }
 
-model CallHistory {
+model HistoryCall {
   id String @id @default(uuid())
   name String
   office String
