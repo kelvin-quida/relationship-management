@@ -17,15 +17,16 @@ model User {
 }
 
 model Client {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  phone     String?  @unique
-  address   String?
-  role      String?
-  roleAge   Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  phone       String?  @unique
+  address     String?
+  description String?
+  role        String?
+  roleAge     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   social Social[]
 
@@ -75,10 +76,10 @@ model Gift {
 }
 
 model HistoryCall {
-  id String @id @default(uuid())
-  name String
-  office String
-  phone String
+  id          String @id @default(uuid())
+  name        String
+  office      String
+  phone       String
   description String
-  date String
+  date        String
 }
