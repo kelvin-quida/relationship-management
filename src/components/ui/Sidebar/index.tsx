@@ -5,11 +5,15 @@ import {
   RectangleStackIcon,
   UserGroupIcon,
   PhoneIcon,
+  SunIcon,
+  MoonIcon,
 } from '@heroicons/react/24/solid'
 import { usePathname, useRouter } from 'next/navigation'
 import NavLink from '../NavLink'
 import { ReactNode } from 'react'
 import { destroyCookie } from 'nookies'
+import Button from '../Button'
+import { useTheme } from 'next-themes'
 
 type TNavMenu = {
   name: string
@@ -43,6 +47,7 @@ const navigation = [
 export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const { theme, setTheme } = useTheme()
 
   function handleLogout() {
     const noCookies = destroyCookie(null, 'token')
@@ -70,11 +75,13 @@ export default function Sidebar() {
           </NavLink>
         ))}
         <div
-          onClick={handleLogout}
-          className="flex h-full flex-col items-center justify-end"
+          className="flex h-full gap-4 flex-col items-center justify-end"
         >
-          <NavLink title="Sair" color="warn" size="sm" href="#">
+          <NavLink onClick={handleLogout} title="Sair" color="warn" size="sm" href="#">
             <ArrowLeftOnRectangleIcon className="h-6 w-6" />
+          </NavLink>
+          <NavLink href='#' color='primary' className='h-10 w-10 flex items-center justify-center p-1' onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+            {theme === 'light' ? <SunIcon className='w-5 h-5'/> : <MoonIcon className='w-5 h-5' />}
           </NavLink>
         </div>
       </div>

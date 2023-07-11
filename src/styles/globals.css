@@ -36,8 +36,8 @@
     --radius: 0.5rem;
   }
 
-  .dark {
-    --background: 0 0% 4%;
+  [data-theme='dark'] {
+    --background: 0 0% 8%;
     --foreground: 0 0% 91%;
 
     --muted: 0 0% 11%;

@@ -7,6 +7,8 @@ import { setCookie } from 'nookies'
 import { api } from '@/lib/api'
 import Input from '../ui/Input'
 import Button from '../ui/Button'
+import { useTheme } from 'next-themes'
+import { MoonIcon, SunIcon } from '@heroicons/react/24/solid'
 
 const FormSchema = z.object({
   email: z.string().email({ message: 'Email invalido!' }).min(10, {
@@ -27,6 +29,7 @@ export default function FormLogin() {
     resolver: zodResolver(FormSchema),
   })
   const router = useRouter()
+  const { theme, setTheme } = useTheme()
 
   async function FormSubmit(data: LoginFormData) {
     try {
@@ -111,6 +114,9 @@ export default function FormLogin() {
               </Button>
             </div>
           </form>
+          <Button color='neutral' className='h-10 w-10 flex items-center justify-center p-1 fixed bottom-0 left-0 m-10' onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+            {theme === 'light' ? <SunIcon className='w-5 h-5'/> : <MoonIcon className='w-5 h-5' />}
+          </Button>
         </div>
       </div>
     </>

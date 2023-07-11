@@ -6,7 +6,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = withTV({
-  darkMode: 'className',
+  darkMode: ['class', '[data-theme="dark"]'],
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     container: {
@@ -18,7 +18,7 @@ module.exports = withTV({
     },
     extend: {
       colors: {
-        background: '#141414',
+        background: 'hsl(var(--background))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

@@ -13,10 +13,10 @@ const button = tv({
     color: {
       primary:
         'border border-emerald-500 bg-emerald-700 text-sm  text-white hover:bg-emerald-500',
-      warn: 'border border-rose-500 bg-rose-950/50 text-sm text-rose-400 hover:bg-rose-500 hover:text-white',
+      warn: 'border border-rose-500 bg-rose-900 text-rose-200 dark:bg-rose-950/50 text-sm dark:text-rose-400 hover:bg-rose-500 hover:text-white',
       neutral:
-        'border border-neutral-800 bg-neutral-900 text-sm text-neutral-400 hover:bg-neutral-800 hover:text-white',
-      none: 'text-sm text-neutral-400 hover:text-white',
+        'border dark:border-neutral-800 border-neutral-200 bg-neutral-200 dark:bg-neutral-900 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-300 hover:text-neutral-950 dark:hover:bg-neutral-800 dark:hover:text-white',
+      none: 'text-sm dark:text-neutral-400  text-neutral-700 hover:text-neutral-900  dark:hover:text-white',
     },
   },
   defaultVariants: {

@@ -38,7 +38,7 @@ export function Combobox({ onValueChange }: Props) {
       <PopoverTrigger asChild>
         <Button
           color="neutral"
-          className="flex w-full items-center justify-start border  border-neutral-700/50 bg-neutral-800/50 capitalize text-neutral-200 placeholder:text-neutral-500 focus:border-emerald-500 focus:ring-emerald-500"
+          className="flex w-full items-center justify-start border  dark:border-neutral-700/50 border-neutral-300 bg-neutral-200 dark:bg-neutral-800/50 capitalize text-neutral-800 dark:text-neutral-200 placeholder:text-neutral-500 focus:border-emerald-500 focus:ring-emerald-500"
           role="combobox"
           aria-expanded={open}
         >

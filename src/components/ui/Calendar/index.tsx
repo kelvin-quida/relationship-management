@@ -64,7 +64,7 @@ const Calendar: React.FC<CalendarProps> = ({ initialDateString }) => {
               currentMonth === today.getMonth() &&
               currentYear === today.getFullYear()
                 ? 'text-green-500'
-                : 'text-neutral-300'
+                : 'text-neutral-800 dark:text-neutral-300'
             }`}
           >
             {day}
@@ -80,7 +80,7 @@ const Calendar: React.FC<CalendarProps> = ({ initialDateString }) => {
         <Button color="neutral" onClick={previousMonth}>
           Previous
         </Button>
-        <h2 className="font-bold text-neutral-100">
+        <h2 className="font-bold text-neutral-900 dark:text-neutral-100">
           {getMonthName(currentDate)}
         </h2>
         <Button color="neutral" onClick={nextMonth}>

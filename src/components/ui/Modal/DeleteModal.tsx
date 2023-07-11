@@ -16,12 +16,12 @@ const DeleteModal = ({ children, title, description }: Props) => (
     </Dialog.Trigger>
 
     <Dialog.Portal>
-      <Dialog.Overlay className="fixed inset-0 bg-black/70  data-[state=open]:animate-overlayShow" />
-      <Dialog.Content className="fixed left-[50%] top-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-background p-[25px] focus:outline-none data-[state=open]:animate-contentShow">
-        <Dialog.Title className="text-[20px] font-bold text-white">
+      <Dialog.Overlay className="fixed inset-0 bg-neutral-100/70 dark:bg-black/70  data-[state=open]:animate-overlayShow" />
+      <Dialog.Content className="fixed left-[50%] top-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-neutral-100 shadow-xl shadow-black/10 border-neutral-200 dark:border-transparent border dark:bg-background p-[25px] focus:outline-none data-[state=open]:animate-contentShow">
+        <Dialog.Title className="text-[20px] font-bold text-neutral-900 dark:text-white">
           {title}
         </Dialog.Title>
-        <Dialog.Description className="mb-5 mt-[10px] text-[15px] leading-normal text-neutral-400">
+        <Dialog.Description className="mb-5 mt-[10px] text-[15px] leading-normal text-neutral-600 dark:text-neutral-400">
           {description}
         </Dialog.Description>
         <div className="mt-8 flex w-full items-center justify-end gap-4">

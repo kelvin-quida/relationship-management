@@ -15,7 +15,7 @@ export default async function Client() {
   return (
     <main className="mx-auto h-screen w-full p-6">
       <Hydrate state={dehydratedState}>
-        <div className="flex h-full w-full items-start justify-center gap-4 overflow-hidden">
+        <div className="flex h-full w-full items-start justify-center gap-4 ">
           <ClientGrid />
           <div className="hidden h-full w-1/3 gap-4 xl:flex xl:flex-col">
             <Box className="h-[600px] w-full">

@@ -12,7 +12,7 @@ const input = tv({
   variants: {
     color: {
       primary:
-        'border border-neutral-700/50 bg-neutral-800/50 text-neutral-200 placeholder:text-neutral-500 focus:border-emerald-500 focus:ring-emerald-500',
+        'border border-neutral-300 bg-neutral-200 dark:border-neutral-700/50 dark:bg-neutral-800/50 text-neutral-800 dark:text-neutral-200 placeholder:text-neutral-500 dark:placeholder:text-neutral-500 focus:border-emerald-500 focus:ring-emerald-500',
     },
   },
   defaultVariants: {
