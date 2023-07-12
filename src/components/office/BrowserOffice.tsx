@@ -19,7 +19,6 @@ export default function BrowserOffice({ id }: Props) {
     queryKey: ['offices', id],
     queryFn: ({ queryKey }) => getOffice(queryKey[1]),
   })
-
   return (
     <>
       <Box className="relative flex h-[220px] min-h-[220px] w-full items-center justify-between overflow-hidden p-10">
@@ -53,8 +52,9 @@ export default function BrowserOffice({ id }: Props) {
               <EnvelopeIcon className="h-5 w-5" />
               <p>{office?.email}</p>
             </Anchor>
+
             <Anchor
-              href={`tel:${office?.phone}`}
+              href={`https://wa.me/${office?.phone}`}
               target="_blank"
               rel="noreferrer"
               color="neutral"

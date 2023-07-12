@@ -18,13 +18,14 @@ const UpdateOfficeSchema = z.object({
     .min(3, { message: 'Mínimo de 3 caracteres' })
     .max(20, { message: 'Máximo de 20 caracteres' }),
   email: z.string().email().min(10, { message: 'Email inválido' }),
-  phone: z
-    .string()
-    .min(10, { message: 'Telefone inválido' })
-    .max(15, { message: 'Telefone inválido' })
-    .transform((value) =>
-      value.replace(/\D/g, '').replace(/^(\d{2})(\d)/g, '($1) $2'),
-    ),
+  // phone: z
+  //   .string()
+  //   .min(10, { message: 'Telefone inválido' })
+  //   .max(15, { message: 'Telefone inválido' })
+  //   .transform((value) =>
+  //     value.replace(/\D/g, '').replace(/^(\d{2})(\d)/g, '($1) $2'),
+  //   ),
+  phone: z.string().optional(),
   location: z.string().optional(),
   website: z.string().optional(),
   description: z.string().optional(),
